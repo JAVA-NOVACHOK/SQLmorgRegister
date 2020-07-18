@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head >
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        <div th:fragment="sideBId" >
+            <div>
+                <head>
+                    <style>
+                        body {font-family: "Century Old Style", sans-serif;}
+
+                        .sidebar {
+                            height: 100%;
+                            width: 160px;
+                            position: fixed;
+                            z-index: 1;
+                            top: 0;
+                            left: 0;
+                            background-color: darkcyan;
+                            overflow-x: hidden;
+                            padding-top: 16px;
+                        }
+
+                        .sidebar a {
+                            padding: 6px 8px 6px 16px;
+                            text-decoration: none;
+                            font-size: 20px;
+                            color: #d9d9d9;
+                            display: block;
+                        }
+
+                        .sidebar a:hover {
+                            color: #f1f1f1;
+                        }
+
+                        .main {
+                            margin-left: 160px; /* Same as the width of the sidenav */
+                            padding: 0px 10px;
+                        }
+
+                        @media screen and (max-height: 450px) {
+                            .sidebar {padding-top: 15px;}
+                            .sidebar a {font-size: 18px;}
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="sidebar">
+                        <a href="home"><i class="fa fa-fw fa-home"></i> Додому</a>
+                        <a href="add"><i class="fa fa-fw fa-wrench"></i> Додати</a>
+                        <a href="find_by_name_rez"><i class="fa fa-fw fa-user"></i> Знайти</a>
+                        <a href="#contact"><i class="fa fa-fw fa-envelope"></i> Контакти</a>
+                    </div>
+                </body>
+            </div>
+        </div>
+    </body>
+</html>

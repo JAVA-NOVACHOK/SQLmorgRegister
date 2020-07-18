@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head id="head">
+        <link rel="stylesheet" href="style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        
+        <meta charset="UTF-8">
+        <title>Game</title>
+
+    </head>
+    <div class="main">
+        <body>
+            <div align="center">
+                <form method="post">
+                    <div class="block" >
+                        <label for="report">Введіть № висновку експерта або акту</label>
+                        <input id="report" type="number" name="reportNumber" required 
+                               placeholder="№ висновок експерта або акту" min="1" autofocus  />
+                        <span class="validity"></span>
+                    </div>
+                    <div class="block">
+                        <label for="surname" >Введіть прізвище</label>
+                        <input id="surname" type="text" name="surname" required
+                               placeholder="прізвище" autofocus  
+                               oninvalid="this.setCustomValidity('Необхідно ввести прізвище або вказати - Невідомий!!!')"
+                               oninput="setCustomValidity('')"/>
+                        <span class="validity"></span>
+                    </div>
+                    <div class="block">
+                        <label for="name" >Введіть ім'я</label>
+                        <input id="name" type="text" name="name" placeholder="ім'я"  />
+                    </div>
+                    <div class="block">
+                        <label for="fathersName" >Введіть по-батькові</label>
+                        <input id="fathersName" type="text" name="fathersName" placeholder="по-батькові" />
+                    </div>
+                    <div class="block">
+                        <label for="sex" >Введіть стать</label>
+                        <input id="sex" type="text" name="sex" placeholder="стать"   />
+                    </div>
+                    <div class="block">
+                        <label for="birthDate" >Введіть дату народження</label>
+                        <input id="birthDate" type="date" name="birthDate" required min="1900-01-01" th:max="${currentDate}"/>
+                        <span class="validity"></span>
+                    </div>
+                    <div class="block">
+                        <label for="deathDate" >Введіть дату смерті</label>
+                        <input id="deathDate" type="date" name="deathDate" required min="1900-01-01" th:max="${currentDate}"/>
+                        <span class="validity"></span>
+                    </div>
+                    <div class="block">
+                        <label for="expert" >Введіть прізвище та ініціали експерта</label>
+                        <input id="expert" type="text" name="expert" placeholder="eксперт" required/>
+                        <span class="validity"></span>
+                    </div>
+                    <div class="block">
+
+                        <input type="submit" value="Додати до бази"/>
+                    </div>
+
+                </form>  
+            </div>
+            
+        </body>
+    </div>
+
+    <div  class="sidebar"  >
+        <div th:replace="fragments/sideB :: sideBId"></div>
+    </div>
+</html>
