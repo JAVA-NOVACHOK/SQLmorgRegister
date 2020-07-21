@@ -6,8 +6,8 @@
 package artem.nikname.demoSQLSpringHTML.repository;
 
 import artem.nikname.demoSQLSpringHTML.model.Patient;
+import artem.nikname.demoSQLSpringHTML.model.Poltava;
 import java.util.List;
-import java.util.jar.Attributes;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,21 +18,28 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Master
  */
-
-public interface PatientRepository {
+@Repository
+public interface PoltavaRepository extends PatientRepository,JpaRepository<Patient,Integer>{
     
-    
+    String TABLE = "Poltava";
+     
+    @Override
+    @Query(value = "SELECT p FROM " + TABLE + " p WHERE p.name LIKE ?1% "
+                + "OR p.surname LIKE ?1% ORDER BY p.surname")
     List<Patient> getPatientByName(String name);
 
-    
+    @Override
+    @Query(value = "SELECT p FROM " + TABLE + " p WHERE p.id = ?1")
     Patient getPatientById(int id);
 
-   
+    @Override
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query(value = "UPDATE " + TABLE + " AS p SET p.report_number = ?, p.name = ?, "
+            + "p.surname = ?, p.fathers_name = ?, p.sex = ?, p.birth_date = ?, "
+            + "p.death_date = ?, p.expert = ? WHERE p.id = ?",
+            nativeQuery = true)
     int updatePatient(int reportNumber, String name, String surname, String fathersName,
             String sex, String birthDate, String deathDate, String expert, int id);
-    
-    Patient save(Patient p);
-    
-    public List<Patient> findAll();
 
 }

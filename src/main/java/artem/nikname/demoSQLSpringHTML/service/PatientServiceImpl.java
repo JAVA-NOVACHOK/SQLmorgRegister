@@ -6,10 +6,12 @@
 package artem.nikname.demoSQLSpringHTML.service;
 
 import artem.nikname.demoSQLSpringHTML.model.Patient;
+import artem.nikname.demoSQLSpringHTML.repository.GlobineRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import artem.nikname.demoSQLSpringHTML.repository.PatientRepository;
+import artem.nikname.demoSQLSpringHTML.repository.PoltavaRepository;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -20,33 +22,39 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class PatientServiceImpl implements PatientService {
 
-    private final PatientRepository repository;
-    private final String TABLE = "patients";
+    private PatientRepository repository = null;
+    private final PoltavaRepository poltavaRepository;
+    private final GlobineRepository globineRepository;
 
     @Autowired
-    public PatientServiceImpl(PatientRepository repository) {
-        this.repository = repository;
+    public PatientServiceImpl(PoltavaRepository poltavaRepository,
+            GlobineRepository globineRepository) {
+        this.poltavaRepository = poltavaRepository;
+        this.globineRepository = globineRepository;
     }
 
     @Override
-    public List<Patient> findAll() {
+    public List<Patient> findAll(String tableName) {
+        setRepository(tableName);
         return repository.findAll();
     }
 
     @Override
-    public Patient save(Patient patient) {
-
+    public Patient save(Patient patient,String tableName) {
+        setRepository(tableName);
         return repository.save(patient);
     }
 
     @Override
-    public List<Patient> getPatientByName(String name,String table) {
-        return repository.getPatientByName(name,table);
+    public List<Patient> getPatientByName(String name,String tableName) {
+        setRepository(tableName);
+        return repository.getPatientByName(name);
     }
 
     @Override
-    public Patient getPatientById(String table,int id) {
-        Patient patient = repository.getPatientById(table,id);
+    public Patient getPatientById(int id,String tableName) {
+        setRepository(tableName);
+        Patient patient = repository.getPatientById(id);
         patient.setBirthDate(Patient.dateForInputDate(patient.getBirthDate()));
         patient.setDeathDate(Patient.dateForInputDate(patient.getDeathDate()));
         return patient;
@@ -54,10 +62,22 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public int updatePatient(String table,int reportNumber, String name, String surname, String fathersName,
-            String sex, String birthDate, String deathDate, String expert, int id) {
-        return repository.updatePatient(table,reportNumber, name, surname, fathersName, sex,
+    public int updatePatient(int reportNumber, String name, String surname, String fathersName,
+            String sex, String birthDate, String deathDate, String expert, int id,String tableName) {
+        setRepository(tableName);
+        return repository.updatePatient(reportNumber, name, surname, fathersName, sex,
                 birthDate, deathDate, expert, id);
+    }
+
+    private void setRepository(String tableName) {
+
+        switch (tableName) {
+            case "poltava":
+                repository = poltavaRepository;
+                break;
+            case "globine" :
+                repository = globineRepository;
+        }
     }
 
 }

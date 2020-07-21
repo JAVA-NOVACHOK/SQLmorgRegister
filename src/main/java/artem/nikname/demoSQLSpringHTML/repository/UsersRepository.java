@@ -6,33 +6,29 @@
 package artem.nikname.demoSQLSpringHTML.repository;
 
 import artem.nikname.demoSQLSpringHTML.model.Patient;
+import artem.nikname.demoSQLSpringHTML.model.User;
 import java.util.List;
-import java.util.jar.Attributes;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author Master
  */
-
-public interface PatientRepository {
+public interface UsersRepository extends JpaRepository<User, Integer>{
+    
+    String TABLE = "User";
+    
+    @Query(value = "SELECT u FROM " + TABLE + " u WHERE u.login = ?1 AND u.password = ?2")
+    public User getUserByLoginAndPassword(String login,String password);
     
     
-    List<Patient> getPatientByName(String name);
-
+    @Query(value = "SELECT u FROM " + TABLE + " u WHERE u.id = ?1")
+    public User getUserById(int id);
     
-    Patient getPatientById(int id);
-
-   
-    int updatePatient(int reportNumber, String name, String surname, String fathersName,
-            String sex, String birthDate, String deathDate, String expert, int id);
+     
     
-    Patient save(Patient p);
     
-    public List<Patient> findAll();
-
 }

@@ -1,21 +1,23 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <link rel="stylesheet" href="style.css">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <meta charset="utf-8"> 
-        <title>Вхід в систему</title> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="signUpStyle.css">
+        <title>Вхід до бази</title>
     </head>
     <body align="center">
-        <div  style="width: 20%">
-        <form action="" method="POST">
-            <label>User ID:</label>
-            <input type="text" id="uid" name="uid" placeholder="логін" required>
-            <label>Password:</label>
-            <input type="password" id="passid" name="passid" placeholder="пароль"required>
-            <input type="submit" value="Submit" />
+
+        <h2>Вхід до бази</h2>
+
+        <form action="/signup" method="post">
+            <div class="container">
+                <label th:text="${massege}" style="color: red;">Warning!</label>
+                <label for="uname"><b>Логін</b></label>
+                <input type="text" placeholder="Введіть логін" name="login" required >
+                <label for="psw"><b>Пароль</b></label>
+                <input type="password" placeholder="Введіть пароль" name="psw" required >
+                <button type="submit" th:value="${user}" >Увійти</button>
+            </div>
         </form>
-        </div>
     </body>
 </html>
