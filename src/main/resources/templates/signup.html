@@ -9,14 +9,17 @@
 
         <h2>Вхід до бази</h2>
 
-        <form action="/signup" method="post">
+        <form method="post">
             <div class="container">
-                <label th:text="${massege}" style="color: red;">Warning!</label>
+                <label  style="color: red;">
+                    <span th:text="${massege == null}?'':'Пароль або логін введено неправильно'">
+                    </span>
+                </label>
                 <label for="uname"><b>Логін</b></label>
                 <input type="text" placeholder="Введіть логін" name="login" required >
                 <label for="psw"><b>Пароль</b></label>
                 <input type="password" placeholder="Введіть пароль" name="psw" required >
-                <button type="submit" th:value="${user}" >Увійти</button>
+                <input type="submit" value="Увійти">
             </div>
         </form>
     </body>

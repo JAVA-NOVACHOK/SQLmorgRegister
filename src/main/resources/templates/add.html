@@ -6,13 +6,13 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         
         <meta charset="UTF-8">
-        <title>Game</title>
+        <title>Додати до бази</title>
 
     </head>
     <div class="main">
         <body>
             <div align="center">
-                <form method="post">
+                <form  method="post">
                     <div class="block" >
                         <label for="report">Введіть № висновку експерта або акту</label>
                         <input id="report" type="number" name="reportNumber" required 
@@ -55,9 +55,8 @@
                         <span class="validity"></span>
                     </div>
                     <div class="block">
-                        <button type="submit" th:value="${user}">Додати до бази</button>
+                        <input type="submit" value="Додати до бази">
                     </div>
-
                 </form>  
             </div>
             

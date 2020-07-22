@@ -47,114 +47,84 @@ import artem.nikname.demoSQLSpringHTML.repository.UsersRepository;
 public class PatientController {
 
     private final PatientService patientService;
-    private final SecurityCheck securityCheck;
     private final UsersRepository usersRepository;
     private final Logger logger = LoggerFactory.getLogger(PatientController.class);
+    private final List<User> users = new ArrayList<>();
 
     @Autowired
     public PatientController(
             PatientService patientService,
-            SecurityCheck securityCheck,
             UsersRepository usersRepositiry) {
-        this.securityCheck = securityCheck;
         this.usersRepository = usersRepositiry;
         this.patientService = patientService;
     }
 
     @GetMapping("/")
-    public String startSignUp(@RequestParam(required = false) Model model) {
+    public String startSignUp(Model model) {
+        model.addAttribute("massege", null);
         System.out.println("In Get signup");
         return "signup";
     }
+    
 
-    @PostMapping("/")
-    public String prosessStart() {
-        System.out.println("In Post signup!");
-        return "signup";
-    }
+//    @GetMapping("add")
+//    public String add() {
+//        System.out.println("In Get Add");
+////        User user = usersRepository.getUserById((int)model.getAttribute("id"));
+////        System.out.println("User from GET Add:" + user);
+////        if (user == null) {
+////            return "redirect:/";
+////        } else {
+//        logger.info("add method mapping");
+//        return ViewNames.ADD;
+////        }
+//    }
 
-    @GetMapping("signup")
-    public String signUp(@RequestParam(required = false) Model model) {
-        return "signup";
-    }
-
-    @PostMapping("signup")
-    public String processSignUp(@RequestParam(required = false) String massege,
-            @RequestParam String login, String psw, Model model) {
-        System.out.println("In Post signup");
-        User user = null;
-        if (securityCheck.checkForInjection(login, psw)) {
-            user = usersRepository.getUserByLoginAndPassword(login, psw);
-            System.out.println("User from POST signup: " + user + " login:" + login + " psw:" + psw);
-        }
-        if (user == null) {
-            model.addAttribute("massege", "Ви ввели логін або пароль неправильно!");
-            return "signup";
-        }
-        model.addAttribute("user", user);
-        System.out.println("Successful signup!");
-        System.out.println(user);
-
-        return "add";
-    }
-
-    @GetMapping(MappingNames.ADD)
-    public String add(@RequestParam User user,Model model) {
-        System.out.println("In Get Add");
-//        User user = (User) model.getAttribute("user");
-        System.out.println("User from GET Add:" + user);
-        if (user == null) {
-            return "redirect:/";
-        } else {
-            model.addAttribute("currentDate", getCurrentDate());
-            model.addAttribute("user", user);
-            logger.info("add method mapping");
-            return ViewNames.ADD;
-        }
-    }
-
-    @PostMapping(ViewNames.ADD)
+    @PostMapping("add")
     public String processAdd(@RequestParam int reportNumber, String surname, String name, String fathersName,
             String sex, String birthDate, String deathDate, String expert, Model model) {
+        model.addAttribute("currentDate", getCurrentDate());
         System.out.println("In Post Add");
-        User user = (User) model.getAttribute("user");
+        User user = usersRepository.getUserById((int)model.getAttribute("id"));
         System.out.println("User from POST Add:" + user);
-        if (user == null) {
-            return "/";
-        } else {
-            logger.info("add post method mapping");
-            Patient patients = new Patient(reportNumber, surname, name, fathersName, sex, birthDate, deathDate, expert);
-            model.addAttribute("massege", "Додавання в базу");
-            model.addAttribute("user", user);
-            synchronized (patientService) {
-                if (patientService.save(patients, user.getTableName()) != null) {
-                    return ViewNames.SUCCESS;
-                }
+//        if (user == null) {
+//            return "/";
+//        } else {
+        logger.info("add post method mapping");
+        Patient patients = new Patient(reportNumber, surname, name, fathersName, sex, birthDate, deathDate, expert);
+        model.addAttribute("massege", "Додавання в базу");
+        model.addAttribute("user", user);
+        synchronized (patientService) {
+            if (patientService.save(patients, user.getTableName()) != null) {
+                return ViewNames.SUCCESS;
             }
-            return ViewNames.FAIL;
         }
+        return ViewNames.FAIL;
+//        }
     }
 
     @PostMapping(ViewNames.FAIL)
-    public String failAdd(@RequestParam Model model
-    ) {
+    public String failAdd(@RequestParam Model model) {
+
+        System.out.println("Fail POST");
         User user = (User) model.getAttribute("user");
         model.addAttribute("user", user);
-        if (user == null) {
-            return "/";
-        }
+//        if (user == null) {
+//            return "/";
+//        }
         logger.info("fail method mapping");
         return ViewNames.FAIL;
     }
 
     @PostMapping(ViewNames.SUCCESS)
-    public String success(@RequestParam Model model
-    ) {
+    public String success(@RequestParam Model model) {
+        System.out.println("Success Post");
+        System.out.println("");
         User user = (User) model.getAttribute("user");
         model.addAttribute("user", user);
-        if (user == null) {
-            return "/";
-        }
+//        if (user == null) {
+//            return "/";
+//        }
         logger.info("success method mapping");
         return "success";
     }
@@ -165,19 +135,19 @@ public class PatientController {
     }
 
     @GetMapping("find_by_name_rez")
-    public String find(Model model,@RequestParam int userId) {
+    public String find(Model model, @RequestParam int userId) {
         User user = (User) model.getAttribute("user");
         model.addAttribute("user", user);
-        if (user == null) {
-            return "/";
-        } else {
-            System.out.println("find method");
-            List<Patient> list = null;
-            List<Patient> patients = new ArrayList<>();
-            model.addAttribute("nullList", list);
-            model.addAttribute("patients", patients);
-            return "find_by_name_rez";
-        }
+//        if (user == null) {
+//            return "/";
+//        } else {
+        System.out.println("find method");
+        List<Patient> list = null;
+        List<Patient> patients = new ArrayList<>();
+        model.addAttribute("nullList", list);
+        model.addAttribute("patients", patients);
+        return "find_by_name_rez";
+//        }
     }
 
     @PostMapping("find_by_name_rez")
@@ -186,20 +156,20 @@ public class PatientController {
         System.out.println("In Post find by name");
         User user = (User) model.getAttribute("user");
         model.addAttribute("user", user);
-        if (user == null) {
-            return "/";
-        } else {
-            List<Patient> list = new ArrayList<>();
-            List<Patient> patients = patientService.getPatientByName(name, user.getTableName());
-            if (patients != null) {
-                for (Patient patient : patients) {
-                    System.out.println(patient);
-                }
-                model.addAttribute("nullList", list);
-                model.addAttribute("patients", patients);
+//        if (user == null) {
+//            return "/";
+//        } else {
+        List<Patient> list = new ArrayList<>();
+        List<Patient> patients = patientService.getPatientByName(name, user.getTableName());
+        if (patients != null) {
+            for (Patient patient : patients) {
+                System.out.println(patient);
             }
-            return "find_by_name_rez";
+            model.addAttribute("nullList", list);
+            model.addAttribute("patients", patients);
         }
+        return "find_by_name_rez";
+//        }
     }
 
     @GetMapping("fill_db")
@@ -237,15 +207,15 @@ public class PatientController {
     public String edit(@RequestParam int id, Model model) {
         User user = (User) model.getAttribute("user");
         model.addAttribute("user", user);
-        if (user == null) {
-            return "/";
-        } else {
-            Patient patient = patientService.getPatientById(id, user.getTableName());
-            model.addAttribute("patient", patient);
-            model.addAttribute("currentDate", getCurrentDate());
-            System.out.println("patient = " + patient);
-            return "edit";
-        }
+//        if (user == null) {
+//            return "/";
+//        } else {
+        Patient patient = patientService.getPatientById(id, user.getTableName());
+        model.addAttribute("patient", patient);
+        model.addAttribute("currentDate", getCurrentDate());
+        System.out.println("patient = " + patient);
+        return "edit";
+//        }
     }
 
     @PostMapping("edit")
@@ -255,36 +225,36 @@ public class PatientController {
             @NotNull String deathDate, @NotNull String expert, int id, Model model) {
         User user = (User) model.getAttribute("user");
         model.addAttribute("user", user);
-        if (user == null) {
-            return "/";
-        } else {
-            model.addAttribute("massege", "Редагування");
-            String tableName = user.getTableName();
-            birthDate = Patient.dateToViewMode(birthDate);
-            deathDate = Patient.dateToViewMode(deathDate);
-            int rez = patientService.updatePatient(reportNumber, name, surname,
-                    fathersName, sex, birthDate, deathDate, expert, id, tableName);
-            if (rez < 1) {
-                return ViewNames.FAIL;
-            }
-            return ViewNames.SUCCESS;
+//        if (user == null) {
+//            return "/";
+//        } else {
+        model.addAttribute("massege", "Редагування");
+        String tableName = user.getTableName();
+        birthDate = Patient.dateToViewMode(birthDate);
+        deathDate = Patient.dateToViewMode(deathDate);
+        int rez = patientService.updatePatient(reportNumber, name, surname,
+                fathersName, sex, birthDate, deathDate, expert, id, tableName);
+        if (rez < 1) {
+            return ViewNames.FAIL;
         }
+        return ViewNames.SUCCESS;
+//        }
     }
 
     @GetMapping("all")
     public String findAll(@RequestParam Model model) {
         User user = (User) model.getAttribute("user");
         model.addAttribute("user", user);
-        if (user == null) {
-            return "/";
-        } else {
-            List<Patient> patients = patientService.findAll(user.getTableName());
-            model.addAttribute("patients", patients);
-            return "showUsers";
-        }
+//        if (user == null) {
+//            return "/";
+//        } else {
+        List<Patient> patients = patientService.findAll(user.getTableName());
+        model.addAttribute("patients", patients);
+        return "showUsers";
+//        }
     }
 
-    private String getCurrentDate() {
+    public static String getCurrentDate() {
         Date currentDate = Calendar.getInstance().getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(currentDate);
