@@ -9,6 +9,7 @@ public interface PatientService {
 
     Patient save(int reportNumber, String surname, String name, String fathersName,
             String sex, String birthDate, String deathDate, String expert, String tableName);
+    Patient save(Patient patient, String tableName);
 
     List<Patient> getPatientByName(String name, String tableName);
 

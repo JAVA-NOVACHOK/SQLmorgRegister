@@ -40,6 +40,7 @@ import java.util.Date;
 import artem.nikname.demoSQLSpringHTML.repository.UsersRepository;
 import java.util.HashSet;
 import java.util.Set;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -51,11 +52,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/patient")
 public class PatientController {
 
+    public static final Set<User> users = new HashSet<>();
+
     private final PatientService patientService;
     private SecurityCheck securityCheck;
     private final UsersRepository usersRepository;
     private final Logger logger = LoggerFactory.getLogger(PatientController.class);
-    private Set<User> users = new HashSet<>();
 
     @Autowired
     public PatientController(
@@ -67,27 +69,36 @@ public class PatientController {
         this.securityCheck = securityCheck;
     }
 
-    @GetMapping("/add")
-    public String add(Model model, @RequestParam String login, String psw) {
-        System.out.println("In Get Add");
-        User user = null;
-        if (securityCheck.checkForInjection(login, psw)) {
-            user = usersRepository.getUserByLoginAndPassword(login, psw);
-            System.out.println("User from POST signup: " + user + " login:" + login + " psw:" + psw);
-        }
-        if (user == null) {
-            model.addAttribute("massege", "1");
-            return "/login";
-        } else {
-            users.add(user);
-        }
-        System.out.println("User from GET Add:" + user);
-        model.addAttribute("currentDate", getCurrentDate());
-        model.addAttribute("user", user);
-        logger.info("add method mapping");
-        return "addForm";
+    @ModelAttribute("user")
+    public User getUser() {
+        return new User();
     }
 
+    @ModelAttribute("patient")
+    public Patient getPatient() {
+        return new Patient();
+    }
+
+//    @GetMapping("/add")
+//    public String add(Model model, @RequestParam String login, String psw) {
+//        System.out.println("In Get Add");
+//        User user = null;
+//        if (securityCheck.checkForInjection(login, psw)) {
+//            user = usersRepository.getUserByLoginAndPassword(login, psw);
+//            System.out.println("User from POST signup: " + user + " login:" + login + " psw:" + psw);
+//        }
+//        if (user == null) {
+//            model.addAttribute("massege", "1");
+//            return "/login";
+//        } else {
+//            users.add(user);
+//        }
+//        System.out.println("User from GET Add:" + user);
+//        model.addAttribute("currentDate", getCurrentDate());
+//        model.addAttribute("user", user);
+//        logger.info("add method mapping");
+//        return "addForm";
+//    }
     @PostMapping("add")
     public String processAdd(@RequestParam int id, int reportNumber, String surname, String name, String fathersName,
             String sex, String birthDate, String deathDate, String expert, Model model) {
@@ -104,11 +115,23 @@ public class PatientController {
             model.addAttribute("id", id);
             synchronized (patientService) {
                 if (patientService.save(reportNumber, surname, name, fathersName, sex, birthDate, deathDate, expert, user.getTableName()) != null) {
-                    return "successForm";
+                    return "success-form";
                 }
             }
             return "fail";
         }
+    }
+
+    @GetMapping("addNew")
+    public String addNewPatient(Model model, @RequestParam int id) {
+        User user = usersRepository.getUserById(id);
+        System.out.println("User from Get addNew:" + user);
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
+        model.addAttribute("id", user.getId());
+        return "add-form";
     }
 
     @PostMapping(ViewNames.FAIL)
@@ -143,24 +166,24 @@ public class PatientController {
     }
 
     @GetMapping("find_by_name_rez")
-    public String find(Model model, @RequestParam int userId) {
-        User user = (User) model.getAttribute("user");
-        model.addAttribute("user", user);
-//        if (user == null) {
-//            return "/";
-//        } else {
-        System.out.println("find method");
-        List<Patient> list = null;
-        List<Patient> patients = new ArrayList<>();
-        model.addAttribute("nullList", list);
-        model.addAttribute("patients", patients);
-        return "find_by_name_rez";
-//        }
+    public String find(Model model, @RequestParam int id) {
+        User user = usersRepository.getUserById(id);
+        if (user == null || !users.contains(user)) {
+            return "redirect:/showLoginForm";
+        } else {
+            System.out.println("find method");
+            List<Patient> list = null;
+            List<Patient> patients = new ArrayList<>();
+            model.addAttribute("nullList", list);
+            model.addAttribute("patients", patients);
+            model.addAttribute("user", user);
+            model.addAttribute("id", id);
+            return "find_by_name_rez_form";
+        }
     }
 
-    @PostMapping("find_by_name_rez")
-    public String findProcess(@RequestParam String name, Model model
-    ) {
+    @PostMapping("searchReasult")
+    public String findProcess(@RequestParam String name, int id, Model model) {
         System.out.println("In Post find by name");
         User user = (User) model.getAttribute("user");
         model.addAttribute("user", user);
@@ -259,6 +282,17 @@ public class PatientController {
         model.addAttribute("patients", patients);
         return "showUsers";
 //        }
+    }
+
+    @GetMapping("exit")
+    public String exit(@RequestParam int id) {
+        User user = usersRepository.getUserById(id);
+        if (user != null) {
+            if (users.contains(user)) {
+                users.remove(user);
+            }
+        }
+        return "redirect:/showLoginForm";
     }
 
     public static String getCurrentDate() {

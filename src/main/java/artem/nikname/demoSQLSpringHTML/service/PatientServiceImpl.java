@@ -42,11 +42,18 @@ public class PatientServiceImpl implements PatientService {
         return repository.findAll();
     }
 
+    
     @Override
     public Patient save(int reportNumber, String surname, String name, String fathersName,
             String sex, String birthDate, String deathDate, String expert,String tableName) {
         setRepository(tableName);
         Patient patient = setPatient(reportNumber, surname, name, fathersName,sex, birthDate, deathDate, expert,tableName);
+        return repository.save(patient);
+    }
+    
+    @Override
+    public Patient save(Patient patient,String tableName) {
+        setRepository(tableName);
         return repository.save(patient);
     }
 

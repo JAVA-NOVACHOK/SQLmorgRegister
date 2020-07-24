@@ -52,12 +52,12 @@ form.example::after {
 <h2>Пошук за ім'ям або прізвищем</h2>
 
 <p>Введіть ім'я або прізвище:</p>
-<form class="example" id="find_by_name" method="post" action="/find_by_name_rez">
+<form class="example" id="find_by_name" method="post" action="/searchReasult">
   <input type="text" id="name" placeholder="Пошук..." name="name">
   <button type="submit"><i class="fa fa-search"></i></button>
 </form>
 
-<p>Centered inside a form with max-width:</p>
+<p>Поки що не працює, Пошук по даті</p>
 <form class="example" action="/find_by_name_rez" style="margin:auto;max-width:300px">
   <input type="text" id="name" placeholder="Search.." name="name">
   <button type="submit"><i class="fa fa-search"></i></button>
@@ -119,7 +119,7 @@ form.example::after {
 
 
     <div  class="sidebar"  >
-        <div th:replace="fragments/sideB :: sideBId"></div>
+        <div th:replace="fragments/sideB :: sideBId(id=${id})"></div>
 
     </div>
 

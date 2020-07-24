@@ -9,7 +9,7 @@
 
         <h2>Вхід до бази</h2>
 
-        <form  action="/patient/add" method="get">
+        <form  action="/goIn" method="post" model>
             <div class="container">
                 <label  style="color: red;">
                     <span th:text="${massege == null}?'':'Пароль або логін введено неправильно'">
