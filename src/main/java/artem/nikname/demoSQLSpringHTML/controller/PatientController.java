@@ -5,6 +5,7 @@
  */
 package artem.nikname.demoSQLSpringHTML.controller;
 
+import artem.nikname.demoSQLSpringHTML.model.IdClass;
 import artem.nikname.demoSQLSpringHTML.model.Patient;
 import artem.nikname.demoSQLSpringHTML.model.User;
 import artem.nikname.demoSQLSpringHTML.security.SecurityCheck;
@@ -79,6 +80,11 @@ public class PatientController {
         return new Patient();
     }
 
+    @ModelAttribute("idClass")
+    public IdClass getIdClass() {
+        return new IdClass();
+    }
+
 //    @GetMapping("/add")
 //    public String add(Model model, @RequestParam String login, String psw) {
 //        System.out.println("In Get Add");
@@ -100,10 +106,10 @@ public class PatientController {
 //        return "addForm";
 //    }
     @PostMapping("add")
-    public String processAdd(@RequestParam int id, int reportNumber, String surname, String name, String fathersName,
+    public String processAdd(@ModelAttribute("idClass") IdClass idClass, @RequestParam int reportNumber, String surname, String name, String fathersName,
             String sex, String birthDate, String deathDate, String expert, Model model) {
         System.out.println("In Post Add");
-        User user = usersRepository.getUserById(id);
+        User user = usersRepository.getUserById(idClass.getId());
         System.out.println("User from Model Attribute = " + user);
         System.out.println("User from POST Add:" + user);
         if (user == null) {
@@ -112,7 +118,7 @@ public class PatientController {
             logger.info("add post method mapping");
 //        Patient patients = new Patient(reportNumber, surname, name, fathersName, sex, birthDate, deathDate, expert);
             model.addAttribute("massege", "Додавання в базу");
-            model.addAttribute("id", id);
+            model.addAttribute("id", idClass.getId());
             synchronized (patientService) {
                 if (patientService.save(reportNumber, surname, name, fathersName, sex, birthDate, deathDate, expert, user.getTableName()) != null) {
                     return "success-form";
@@ -123,8 +129,8 @@ public class PatientController {
     }
 
     @GetMapping("addNew")
-    public String addNewPatient(Model model, @RequestParam int id) {
-        User user = usersRepository.getUserById(id);
+    public String addNewPatient(@ModelAttribute("IdClass") IdClass idClass, Model model) {
+        User user = usersRepository.getUserById(idClass.getId());
         System.out.println("User from Get addNew:" + user);
         if (user == null) {
             return "redirect:/login";
@@ -166,8 +172,8 @@ public class PatientController {
     }
 
     @GetMapping("find_by_name_rez")
-    public String find(Model model, @RequestParam int id) {
-        User user = usersRepository.getUserById(id);
+    public String find(@ModelAttribute("idClass") IdClass idClass, Model model) {
+        User user = usersRepository.getUserById(idClass.getId());
         if (user == null || !users.contains(user)) {
             return "redirect:/showLoginForm";
         } else {
@@ -177,30 +183,29 @@ public class PatientController {
             model.addAttribute("nullList", list);
             model.addAttribute("patients", patients);
             model.addAttribute("user", user);
-            model.addAttribute("id", id);
+            model.addAttribute("id", idClass.getId());
             return "find_by_name_rez_form";
         }
     }
 
     @PostMapping("searchReasult")
-    public String findProcess(@RequestParam String name, int id, Model model) {
-        System.out.println("In Post find by name");
-        User user = (User) model.getAttribute("user");
-        model.addAttribute("user", user);
-//        if (user == null) {
-//            return "/";
-//        } else {
-        List<Patient> list = new ArrayList<>();
-        List<Patient> patients = patientService.getPatientByName(name, user.getTableName());
-        if (patients != null) {
-            for (Patient patient : patients) {
-                System.out.println(patient);
+    public String findProcess(@ModelAttribute("idClass") IdClass idClass, @RequestParam String name, Model model) {
+        User user = usersRepository.getUserById(idClass.getId());
+        if (user == null || !users.contains(user)) {
+            return "redirect:/showLoginForm";
+        } else {
+            List<Patient> list = new ArrayList<>();
+            List<Patient> patients = patientService.getPatientByName(name, user.getTableName());
+            if (patients != null) {
+                for (Patient patient : patients) {
+                    System.out.println(patient);
+                }
+                model.addAttribute("id", user.getId());
+                model.addAttribute("nullList", list);
+                model.addAttribute("patients", patients);
             }
-            model.addAttribute("nullList", list);
-            model.addAttribute("patients", patients);
+            return "find_by_name_rez_form";
         }
-        return "find_by_name_rez";
-//        }
     }
 
     @GetMapping("fill_db")
@@ -234,41 +239,40 @@ public class PatientController {
     }
 
     @GetMapping("edit")
-    public String edit(@RequestParam int id, Model model) {
-        User user = (User) model.getAttribute("user");
-        model.addAttribute("user", user);
-//        if (user == null) {
-//            return "/";
-//        } else {
-        Patient patient = patientService.getPatientById(id, user.getTableName());
-        model.addAttribute("patient", patient);
-        model.addAttribute("currentDate", getCurrentDate());
-        System.out.println("patient = " + patient);
-        return "edit";
-//        }
+    public String edit(@ModelAttribute ("idClass") IdClass idClass,@RequestParam int patientId, Model model) {
+        User user = usersRepository.getUserById(idClass.getId());
+        if (user == null || !users.contains(user)) {
+            return "redirect:/showLoginForm";
+        } else {
+            Patient patient = patientService.getPatientById(patientId, user.getTableName());
+            model.addAttribute("id", user.getId());
+            model.addAttribute("patient", patient);
+            model.addAttribute("currentDate", getCurrentDate());
+            System.out.println("patient = " + patient);
+            return "edit-form";
+        }
     }
 
     @PostMapping("edit")
-    public String processingEdit(@RequestParam
-            @NotNull int reportNumber, @NotNull String surname, @NotNull String name,
-            @NotNull String fathersName, @NotNull String sex, @NotNull String birthDate,
-            @NotNull String deathDate, @NotNull String expert, int id, Model model) {
-        User user = (User) model.getAttribute("user");
-        model.addAttribute("user", user);
-//        if (user == null) {
-//            return "/";
-//        } else {
-        model.addAttribute("massege", "Редагування");
-        String tableName = user.getTableName();
-        birthDate = Patient.dateToViewMode(birthDate);
-        deathDate = Patient.dateToViewMode(deathDate);
-        int rez = patientService.updatePatient(reportNumber, name, surname,
-                fathersName, sex, birthDate, deathDate, expert, id, tableName);
-        if (rez < 1) {
-            return ViewNames.FAIL;
+    public String processingEdit(@RequestParam int reportNumber, String surname, String name,
+            String fathersName, String sex, String birthDate,
+            String deathDate, String expert, int patientId, int id, Model model) {
+        User user = usersRepository.getUserById(id);
+        if (user == null || !users.contains(user)) {
+            return "redirect:/showLoginForm";
+        } else {
+            model.addAttribute("id", id);
+            model.addAttribute("massege", "Редагування");
+            String tableName = user.getTableName();
+            birthDate = Patient.dateToViewMode(birthDate);
+            deathDate = Patient.dateToViewMode(deathDate);
+            int rez = patientService.updatePatient(reportNumber, name, surname,
+                    fathersName, sex, birthDate, deathDate, expert, patientId, tableName);
+            if (rez < 1) {
+                return ViewNames.FAIL;
+            }
+            return "success-form";
         }
-        return ViewNames.SUCCESS;
-//        }
     }
 
     @GetMapping("all")

@@ -15,7 +15,7 @@
                 <form method="post">
                     <div class="block">
                         <label for="report"> № висновок експерта або акту</label>
-                        <input type="number" hidden="true" th:value="${patient.id}" name="id">
+                        <input type="number" hidden="true" th:value="${patient.patientId}" name="patientId">
                         <input id="report" type="number" name="reportNumber" required
                                th:value="${patient.reportNumber}"  
                                min="1" autofocus/>
@@ -63,6 +63,7 @@
                         <span class="validity"></span>
                     </div>
                     <div class="block">
+                        <input type="number" hidden="true" th:value="${id}">
                         <input type="submit" value="Редагувати"/>
                     </div>
 
@@ -73,6 +74,6 @@
     </div>
 
     <div  class="sidebar"  >
-        <div th:replace="fragments/sideB :: sideBId"></div>
+        <div th:replace="fragments/sideB :: sideBId(id=${id})"></div>
     </div>
 </html>

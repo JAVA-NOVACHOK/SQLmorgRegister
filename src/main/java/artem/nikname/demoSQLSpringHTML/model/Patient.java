@@ -28,7 +28,7 @@ public class Patient implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private int patientId;
     private int reportNumber;
     private String surname;
     private String name;
@@ -72,13 +72,15 @@ public class Patient implements Serializable {
         this.reportNumber = reportNumber;
     }
 
-    public int getId() {
-        return id;
+    public int getPatientId() {
+        return patientId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPatientId(int patientId) {
+        this.patientId = patientId;
     }
+
+   
 
     public String getSurname() {
         return surname;
@@ -143,7 +145,7 @@ public class Patient implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 59 * hash + this.id;
+        hash = 59 * hash + this.patientId;
         return hash;
     }
 
@@ -159,7 +161,7 @@ public class Patient implements Serializable {
             return false;
         }
         final Patient other = (Patient) obj;
-        if (this.id != other.id) {
+        if (this.patientId != other.patientId) {
             return false;
         }
         return true;
@@ -167,7 +169,7 @@ public class Patient implements Serializable {
 
     @Override
     public String toString() {
-        return "Patient{" + "id = " + id + ", report number =" + reportNumber + ", surname=" + surname + ", name="
+        return "Patient{" + "id = " + patientId + ", report number =" + reportNumber + ", surname=" + surname + ", name="
                 + name + ", fathersName=" + fathersName + ", sex=" + sex
                 + ", birthDate=" + birthDate + ", deathDate=" + deathDate
                 + ", expert=" + expert + '}';

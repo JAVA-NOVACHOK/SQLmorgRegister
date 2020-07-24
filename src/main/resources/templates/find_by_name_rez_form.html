@@ -52,7 +52,8 @@ form.example::after {
 <h2>Пошук за ім'ям або прізвищем</h2>
 
 <p>Введіть ім'я або прізвище:</p>
-<form class="example" id="find_by_name" method="post" action="/searchReasult">
+<form class="example" id="find_by_name" method="post" action="/patient/searchReasult">
+    <input type="number" hidden="true" th:value="${id}" name="id">
   <input type="text" id="name" placeholder="Пошук..." name="name">
   <button type="submit"><i class="fa fa-search"></i></button>
 </form>
@@ -103,8 +104,9 @@ form.example::after {
                     <td th:text="${patient.birthDate}">дата народження</td>
                     <td th:text="${patient.deathDate}">дата смерті</td>
                     <td th:text="${patient.expert}">експерт</td>
-                    <td ><form action="/edit" method="get">
-                            <input type="number" hidden="true" style="max-width: 0px;"th:value="${patient.id}" name="id">
+                    <td ><form action="/patient/edit" method="get">
+                            <input type="number" hidden="true" th:value="${id}" name="id">
+                            <input type="number" hidden="true" style="max-width: 0px;"th:value="${patient.patientId}" name="patientId">
                             <button  type="submit"><i class="fa fa-edit"></i></button>
                         </form>
                     </td>
