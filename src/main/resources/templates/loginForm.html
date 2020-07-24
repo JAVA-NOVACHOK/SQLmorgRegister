@@ -9,16 +9,16 @@
 
         <h2>Вхід до бази</h2>
 
-        <form method="post">
+        <form  action="/patient/add" method="get">
             <div class="container">
                 <label  style="color: red;">
                     <span th:text="${massege == null}?'':'Пароль або логін введено неправильно'">
                     </span>
                 </label>
-                <label for="uname"><b>Логін</b></label>
+                <label for="login"><b>Логін</b></label>
                 <input type="text" placeholder="Введіть логін" name="login" required >
                 <label for="psw"><b>Пароль</b></label>
-                <input type="password" placeholder="Введіть пароль" name="psw" required >
+                <input type="text" placeholder="Введіть пароль" name="psw" required >
                 <input type="submit" value="Увійти">
             </div>
         </form>

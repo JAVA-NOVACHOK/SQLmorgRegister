@@ -38,69 +38,77 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import artem.nikname.demoSQLSpringHTML.repository.UsersRepository;
+import java.util.HashSet;
+import java.util.Set;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  *
  * @author Master
  */
 @Controller
+@RequestMapping("/patient")
 public class PatientController {
 
     private final PatientService patientService;
+    private SecurityCheck securityCheck;
     private final UsersRepository usersRepository;
     private final Logger logger = LoggerFactory.getLogger(PatientController.class);
-    private final List<User> users = new ArrayList<>();
+    private Set<User> users = new HashSet<>();
 
     @Autowired
     public PatientController(
+            SecurityCheck securityCheck,
             PatientService patientService,
             UsersRepository usersRepositiry) {
         this.usersRepository = usersRepositiry;
         this.patientService = patientService;
+        this.securityCheck = securityCheck;
     }
 
-    @GetMapping("/")
-    public String startSignUp(Model model) {
-        model.addAttribute("massege", null);
-        System.out.println("In Get signup");
-        return "signup";
+    @GetMapping("/add")
+    public String add(Model model, @RequestParam String login, String psw) {
+        System.out.println("In Get Add");
+        User user = null;
+        if (securityCheck.checkForInjection(login, psw)) {
+            user = usersRepository.getUserByLoginAndPassword(login, psw);
+            System.out.println("User from POST signup: " + user + " login:" + login + " psw:" + psw);
+        }
+        if (user == null) {
+            model.addAttribute("massege", "1");
+            return "/login";
+        } else {
+            users.add(user);
+        }
+        System.out.println("User from GET Add:" + user);
+        model.addAttribute("currentDate", getCurrentDate());
+        model.addAttribute("user", user);
+        logger.info("add method mapping");
+        return "addForm";
     }
-    
-
-//    @GetMapping("add")
-//    public String add() {
-//        System.out.println("In Get Add");
-////        User user = usersRepository.getUserById((int)model.getAttribute("id"));
-////        System.out.println("User from GET Add:" + user);
-////        if (user == null) {
-////            return "redirect:/";
-////        } else {
-//        logger.info("add method mapping");
-//        return ViewNames.ADD;
-////        }
-//    }
 
     @PostMapping("add")
-    public String processAdd(@RequestParam int reportNumber, String surname, String name, String fathersName,
+    public String processAdd(@RequestParam int id, int reportNumber, String surname, String name, String fathersName,
             String sex, String birthDate, String deathDate, String expert, Model model) {
-        model.addAttribute("currentDate", getCurrentDate());
         System.out.println("In Post Add");
-        User user = usersRepository.getUserById((int)model.getAttribute("id"));
+        User user = usersRepository.getUserById(id);
+        System.out.println("User from Model Attribute = " + user);
         System.out.println("User from POST Add:" + user);
-//        if (user == null) {
-//            return "/";
-//        } else {
-        logger.info("add post method mapping");
-        Patient patients = new Patient(reportNumber, surname, name, fathersName, sex, birthDate, deathDate, expert);
-        model.addAttribute("massege", "Додавання в базу");
-        model.addAttribute("user", user);
-        synchronized (patientService) {
-            if (patientService.save(patients, user.getTableName()) != null) {
-                return ViewNames.SUCCESS;
+        if (user == null) {
+            return "redirect:/login";
+        } else {
+            logger.info("add post method mapping");
+//        Patient patients = new Patient(reportNumber, surname, name, fathersName, sex, birthDate, deathDate, expert);
+            model.addAttribute("massege", "Додавання в базу");
+            model.addAttribute("id", id);
+            synchronized (patientService) {
+                if (patientService.save(reportNumber, surname, name, fathersName, sex, birthDate, deathDate, expert, user.getTableName()) != null) {
+                    return "successForm";
+                }
             }
+            return "fail";
         }
-        return ViewNames.FAIL;
-//        }
     }
 
     @PostMapping(ViewNames.FAIL)
@@ -116,12 +124,12 @@ public class PatientController {
         return ViewNames.FAIL;
     }
 
-    @PostMapping(ViewNames.SUCCESS)
-    public String success(@RequestParam Model model) {
+    @GetMapping("success")
+    public String success(Model model, @RequestParam int id) {
         System.out.println("Success Post");
         System.out.println("");
-        User user = (User) model.getAttribute("user");
-        model.addAttribute("user", user);
+
+        model.addAttribute("massege", "ededed id = " + id);
 //        if (user == null) {
 //            return "/";
 //        }
@@ -186,10 +194,9 @@ public class PatientController {
                 String res = arr.get(size - 2) + " " + arr.get(size - 1);
                 arr.set(size - 2, res);
                 arr.remove(size - 1);
-                Patient patient = new Patient(Integer.parseInt(arr.get(0)), arr.get(1), arr.get(2), arr.get(3), arr.get(4),
-                        replaceDots(arr.get(5)), replaceDots(arr.get(6)), arr.get(7));
                 synchronized (patientService) {
-                    patientService.save(patient, tableName);
+                    patientService.save(Integer.parseInt(arr.get(0)), arr.get(1), arr.get(2), arr.get(3), arr.get(4),
+                            replaceDots(arr.get(5)), replaceDots(arr.get(6)), arr.get(7), tableName);
                 }
                 System.out.println("executed");
             }

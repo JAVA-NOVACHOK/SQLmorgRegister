@@ -3,14 +3,22 @@ package artem.nikname.demoSQLSpringHTML.controller;
 import artem.nikname.demoSQLSpringHTML.model.User;
 import artem.nikname.demoSQLSpringHTML.repository.UsersRepository;
 import artem.nikname.demoSQLSpringHTML.security.SecurityCheck;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@ControllerAdvice
 public class SignUpController {
 
     private final SecurityCheck securityCheck;
@@ -23,16 +31,18 @@ public class SignUpController {
         this.usersRepository = usersRepository;
     }
 
-    @GetMapping("signup")
-    public String signUp(Model model) {
+    
+    
+    @GetMapping("showLoginForm")
+    public String startSignUp(Model model) {
         System.out.println("SIGNup GET!");
         model.addAttribute("massege", null);
         System.out.println("SIGNup GET out!");
-        return "signup";
+        return "loginForm";
     }
 
-    @PostMapping("signup")
-    public String processSignUp(@RequestParam String login, String psw, Model model) {
+    @PostMapping
+    public String processSignUp(Model model,@RequestParam String login, String psw) {
         model.addAttribute("massege", "1");
         System.out.println("In Post signup");
         User user = null;
@@ -41,12 +51,12 @@ public class SignUpController {
             System.out.println("User from POST signup: " + user + " login:" + login + " psw:" + psw);
         }
         if (user == null) {
-            return "signup";
+            return "loginForm";
         }
         model.addAttribute("currentDate", PatientController.getCurrentDate());
         model.addAttribute("id", user.getId());
         System.out.println("Successful signup!");
         System.out.println(user);
-        return "add";
+        return "patient/add";
     }
 }

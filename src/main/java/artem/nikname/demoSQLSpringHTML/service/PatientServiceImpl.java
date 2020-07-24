@@ -5,7 +5,9 @@
  */
 package artem.nikname.demoSQLSpringHTML.service;
 
+import artem.nikname.demoSQLSpringHTML.model.Globine;
 import artem.nikname.demoSQLSpringHTML.model.Patient;
+import artem.nikname.demoSQLSpringHTML.model.Poltava;
 import artem.nikname.demoSQLSpringHTML.repository.GlobineRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ public class PatientServiceImpl implements PatientService {
     private PatientRepository repository = null;
     private final PoltavaRepository poltavaRepository;
     private final GlobineRepository globineRepository;
+    
 
     @Autowired
     public PatientServiceImpl(PoltavaRepository poltavaRepository,
@@ -40,8 +43,10 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Patient save(Patient patient,String tableName) {
+    public Patient save(int reportNumber, String surname, String name, String fathersName,
+            String sex, String birthDate, String deathDate, String expert,String tableName) {
         setRepository(tableName);
+        Patient patient = setPatient(reportNumber, surname, name, fathersName,sex, birthDate, deathDate, expert,tableName);
         return repository.save(patient);
     }
 
@@ -78,6 +83,20 @@ public class PatientServiceImpl implements PatientService {
             case "globine" :
                 repository = globineRepository;
         }
+    }
+    
+    public Patient setPatient(int reportNumber, String surname, String name, String fathersName,
+            String sex, String birthDate, String deathDate, String expert,String tableName){
+        Patient patient = null;
+         switch (tableName) {
+            case "poltava":
+                patient = new Poltava(reportNumber, name, surname, fathersName, sex,birthDate, deathDate, expert);
+                break;
+            case "globine" :
+                patient = new Globine(reportNumber, name, surname, fathersName, sex,birthDate, deathDate, expert);
+                break;
+        }
+        return patient;
     }
 
 }

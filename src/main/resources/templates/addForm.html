@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head id="head">
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="patient/style.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         
@@ -12,7 +12,8 @@
     <div class="main">
         <body>
             <div align="center">
-                <form  method="post">
+                <form  method="post" modelAttribute="${user}">
+                    <h1 th:text="|${user.departmentName} відділення|"></h1>
                     <div class="block" >
                         <label for="report">Введіть № висновку експерта або акту</label>
                         <input id="report" type="number" name="reportNumber" required 
@@ -55,6 +56,7 @@
                         <span class="validity"></span>
                     </div>
                     <div class="block">
+                        <input type="number" hidden="true" name="id" th:value="${user.id}">
                         <input type="submit" value="Додати до бази">
                     </div>
                 </form>  
@@ -64,6 +66,6 @@
     </div>
 
     <div  class="sidebar"  >
-        <div th:replace="fragments/sideB :: sideBId"></div>
+        <div th:replace="fragments/sideB :: sideBId(id=${user.id}"></div>
     </div>
 </html>
