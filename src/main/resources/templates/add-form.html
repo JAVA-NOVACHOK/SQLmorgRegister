@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head id="head">
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" type="text/css" href="patient/style.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         
@@ -14,10 +15,16 @@
             <div align="center">
                 <form  action="/patient/add" method="post" modelAttribute="${user}">
                     <h1 th:text="|${user.departmentName} відділення|"></h1>
+                    <div class="block">
+                        <h3 style="color: red; text-align: right">✖</h3>
+                        <h3 style="text-align: left"> - поля обов'язкові для заповнення</h3> 
+                    </div>
                     <div class="block" >
                         <label for="report">Введіть № висновку експерта або акту</label>
                         <input id="report" type="number" name="reportNumber" required 
-                               placeholder="№ висновок експерта або акту" min="1" autofocus  />
+                               placeholder="№ висновок експерта або акту" min="1" autofocus 
+                                oninvalid="this.setCustomValidity('Необхідно ввести № Висновку експерта!!!')"
+                               oninput="setCustomValidity('')"/>
                         <span class="validity"></span>
                     </div>
                     <div class="block">

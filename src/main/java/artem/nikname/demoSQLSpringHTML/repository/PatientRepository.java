@@ -34,5 +34,8 @@ public interface PatientRepository {
     Patient save(Patient p);
     
     public List<Patient> findAll();
+    
+    int deletePatient(int patientId);
+    void resetPK();
 
 }

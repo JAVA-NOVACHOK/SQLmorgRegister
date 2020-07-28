@@ -48,7 +48,7 @@
                 </head>
                 <body>
                     <div class="sidebar">
-                        <a href="home"><i class="fa fa-fw fa-home"></i> Додому</a>
+                        <a th:href="@{/patient/home?id={id}(id=${id})}"><i class="fa fa-fw fa-home"></i> Додому</a>
                         <a th:href="@{/patient/addNew?id={id}(id=${id})}"><i class="fa fa-fw fa-plus-circle"></i> Додати</a>
                         <a th:href="@{/patient/find_by_name_rez(id=${id})}"><i class="fa fa-fw fa-user"></i> Знайти</a>
                         <a th:href="@{/patient/exit?id={id}(id=${id})}"><i class="fa fa-fw fa-arrow-circle-left"></i> Вийти</a>

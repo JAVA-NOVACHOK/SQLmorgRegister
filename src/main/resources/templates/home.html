@@ -8,8 +8,12 @@
     </head>
     <body>
         <h3>Home</h3>
+        <form>
+            <input type="number" hidden="true" th:value="${id}">
+        </form>  
+
     </body>
     <div  class="sidebar"  >
-        <div th:replace="fragments/sideB :: sideBId"></div>
+        <div th:replace="fragments/sideB :: sideBId(id=${id})"></div>
     </div>
 </html>

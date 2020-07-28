@@ -37,9 +37,22 @@ public interface PoltavaRepository extends PatientRepository,JpaRepository<Patie
     @Transactional
     @Query(value = "UPDATE " + TABLE + " AS p SET p.report_number = ?, p.name = ?, "
             + "p.surname = ?, p.fathers_name = ?, p.sex = ?, p.birth_date = ?, "
-            + "p.death_date = ?, p.expert = ? WHERE p.id = ?",
+            + "p.death_date = ?, p.expert = ? WHERE p.patient_id = ?",
             nativeQuery = true)
     int updatePatient(int reportNumber, String name, String surname, String fathersName,
-            String sex, String birthDate, String deathDate, String expert, int id);
+            String sex, String birthDate, String deathDate, String expert, int patientId);
 
+    @Override
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query(value = "DELETE FROM " + TABLE + " AS p WHERE p.patient_id = ?",
+            nativeQuery = true)
+    int deletePatient(int patientId);
+    
+    @Override
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query(value = "ALTER TABLE " + TABLE + " AUTO_INCREMENT = 1",
+            nativeQuery = true)
+    void resetPK();
 }

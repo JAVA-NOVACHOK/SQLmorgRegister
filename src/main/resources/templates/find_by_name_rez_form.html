@@ -1,79 +1,109 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html id="page" lang="en" xmlns:th="http://www.thymeleaf.org">
     <head id="head">
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" type="text/css" href="style.css">
+
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <meta charset="UTF-8">
         <title>Знайти за ім'ям або прізвищем</title>
         <style>
-body {
-  font-family: Arial;
-}
+            body {
+                font-family: Arial;
+            }
 
-* {
-  box-sizing: border-box;
-}
+            * {
+                box-sizing: border-box;
+            }
 
-form.example input[type=text] {
-  padding: 10px;
-  font-size: 17px;
-  border: 1px solid grey;
-  float: left;
-  width: 80%;
-  background: #f1f1f1;
-}
+            form.example input[type=text] {
+                padding: 10px;
+                font-size: 17px;
+                border: 1px solid grey;
+                float: left;
+                width: 80%;
+                background: #f1f1f1;
+            }
 
-form.example button {
-  float: left;
-  width: 20%;
-  padding: 10px;
-  background: #2196F3;
-  color: white;
-  font-size: 17px;
-  border: 1px solid grey;
-  border-left: none;
-  cursor: pointer;
-}
+            form.example button {
+                float: left;
+                width: 20%;
+                padding: 10px;
+                background: #2196F3;
+                color: white;
+                font-size: 17px;
+                border: 1px solid grey;
+                border-left: none;
+                cursor: pointer;
+            }
 
-form.example button:hover {
-  background: #0b7dda;
-}
+            form.example button:hover {
+                background: #0b7dda;
+            }
 
-form.example::after {
-  content: "";
-  clear: both;
-  display: table;
-}
-</style>
-</head>
-<body>
+            form.example::after {
+                content: "";
+                clear: both;
+                display: table;
+            }
 
-<h2>Пошук за ім'ям або прізвищем</h2>
+            #remove{
+                background-color: #ff5454; 
+                border: 1px solid black;
+            }
+            #remove:hover{
+                background-color: #f2a229;
+            }
 
-<p>Введіть ім'я або прізвище:</p>
-<form class="example" id="find_by_name" method="post" action="/patient/searchReasult">
-    <input type="number" hidden="true" th:value="${id}" name="id">
-  <input type="text" id="name" placeholder="Пошук..." name="name">
-  <button type="submit"><i class="fa fa-search"></i></button>
-</form>
+            #remove:active{
+                background-color: #67b013;
+            }
 
-<p>Поки що не працює, Пошук по даті</p>
-<form class="example" action="/find_by_name_rez" style="margin:auto;max-width:300px">
-  <input type="text" id="name" placeholder="Search.." name="name">
-  <button type="submit"><i class="fa fa-search"></i></button>
-</form>
+            #edit{
+                background-color:  #adc3ff;
+                border: 1px solid black;
+            }
+
+            #edit:hover{
+                background-color: #f0f0f0;
+                border: 1px solid black;
+            }
+
+            #edit:active{
+                background-color: #d6f0b4;
+                border: 1px solid black;
+            }
+
+
+        </style>
+    </head>
+    <body>
+
+        <h2>Пошук за ім'ям або прізвищем</h2>
+
+        <p>Введіть ім'я або прізвище:</p>
+        <form class="example" id="find_by_name" method="post" action="/patient/searchReasult">
+            <input type="number" hidden="true" th:value="${id}" name="id">
+            <input type="text" id="name" placeholder="Пошук..." name="name">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+
+        <p>Поки що не працює, Пошук по даті</p>
+        <form class="example" action="/find_by_name_rez" style="margin:auto;max-width:300px">
+            <input type="text" id="name" placeholder="Search.." name="name">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
 
     </head>
 
 
-    <body class="main"> 
-        
-        <div>
+<body class="main"> 
+
+    <div>
         <table style="overflow-x: auto;">
             <thead>
                 <tr>
-                    <td colspan="9" style="text-align: center; background-color: #f2f2f2;">
+                    <td colspan="10" style="text-align: center; background-color: #f2f2f2;">
                         <span th:text="${nullList == null}?'Почніть пошук':
                               (${patients.empty}?'Нічого не знайдено':|Знайдено 
                               результатів: ${patients.size()}|)"></span>
@@ -81,7 +111,7 @@ form.example::after {
                     </td>
                 </tr>
                 <tr>
-                    <th style="max-width: 50px; text-align: center;">№ висновку експерта</th>
+                    <th style="max-width: 50px; text-align: center;">№</th>
                     <th>Прізвище</th>
                     <th>Ім'я</th>
                     <th>По-батькові</th>
@@ -90,13 +120,14 @@ form.example::after {
                     <th>дата смерті</th>
                     <th>експерт</th>
                     <th></th>
+                    <th></th>
                 </tr>
-                
+
             </thead>
             <tbody >
 
                 <tr th:each="patient : ${patients}">
-                    <td th:text="${patient.reportNumber}" style="min-width: fit-content;max-width: 30px; text-align:  center">№</td>
+                    <td th:text="${patient.reportNumber}" style="min-width: 15px; text-align:  center">№</td>
                     <td th:text="${patient.surname}">Прізвище</td>
                     <td th:text="${patient.name}">Ім'я</td>
                     <td th:text="${patient.fathersName}">По-батькові</td>
@@ -107,23 +138,48 @@ form.example::after {
                     <td ><form action="/patient/edit" method="get">
                             <input type="number" hidden="true" th:value="${id}" name="id">
                             <input type="number" hidden="true" style="max-width: 0px;"th:value="${patient.patientId}" name="patientId">
-                            <button  type="submit"><i class="fa fa-edit"></i></button>
+                            <button  type="submit" id="edit" ><i class="fa fa-edit"></i></button>
                         </form>
                     </td>
-                    
+                    <td>
+                        <form id="myForm" method="get" >
+                            <script th:inline="javascript">
+                                function confirmDelete() {
+                                    var conf = confirm("Ви впернені, що хочете видалити запис?");
+                                    if (conf) {
+                                        document.getElementById("myForm").action = "/patient/delete";
+                                    } else {
+                                        document.getElementById("myForm").action = "/patient/searchReasult";
+                                    }
+                                }
+                                function refresh() {
+                                    window.location.reload();
+                                }
+                            </script>
+                            <input type="number" hidden="true" style="max-width: 0px;" th:value="${id}" name="id">                        
+                            <input type="text" hidden="true" style="max-width: 0px;" th:value="${searchName}" name="searchName">                        
+                            <input type="number" hidden="true" style="max-width: 0px;"th:value="${patient.patientId}" name="patientId">
+                            <button type="submit" id="remove" onclick='confirmDelete()'><i class="fa fa-remove"></i>
+                            </button>
+
+                        </form>
+                    </td>
+
                 </tr>
 
             </tbody>
         </table>  
-        </div>
-    </body>
-
-
-
-    <div  class="sidebar"  >
-        <div th:replace="fragments/sideB :: sideBId(id=${id})"></div>
-
     </div>
+</body>
+
+
+
+<div  class="sidebar"  >
+    <div th:replace="fragments/sideB :: sideBId(id=${id})"></div>
+
+</div>
+
+
 
 
 </html>

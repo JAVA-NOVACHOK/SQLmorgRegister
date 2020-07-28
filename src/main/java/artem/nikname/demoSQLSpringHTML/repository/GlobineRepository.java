@@ -7,6 +7,7 @@ package artem.nikname.demoSQLSpringHTML.repository;
 
 import artem.nikname.demoSQLSpringHTML.model.Globine;
 import artem.nikname.demoSQLSpringHTML.model.Patient;
+import static artem.nikname.demoSQLSpringHTML.repository.PoltavaRepository.TABLE;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -35,9 +36,23 @@ public interface GlobineRepository extends PatientRepository,JpaRepository<Patie
     @Transactional
     @Query(value = "UPDATE " + TABLE + " AS p SET p.report_number = ?, p.name = ?, "
             + "p.surname = ?, p.fathers_name = ?, p.sex = ?, p.birth_date = ?, "
-            + "p.death_date = ?, p.expert = ? WHERE p.id = ?",
+            + "p.death_date = ?, p.expert = ? WHERE p.patient_id = ?",
             nativeQuery = true)
     int updatePatient(int reportNumber, String name, String surname, String fathersName,
-            String sex, String birthDate, String deathDate, String expert, int id);
+            String sex, String birthDate, String deathDate, String expert, int patientId);
+    
+    @Override
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query(value = "DELETE FROM " + TABLE + " AS p WHERE p.patient_id = ?",
+            nativeQuery = true)
+    int deletePatient(int patientId);
+    
+    @Override
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query(value = "ALTER TABLE " + TABLE + " AUTO_INCREMENT = 1",
+            nativeQuery = true)
+    void resetPK();
 
 }

@@ -10,13 +10,16 @@ head{
     background-color:  antiquewhite
 }
 h1 {
-    color: blueviolet;
-    font-family: verdana;
-    font-size: 300%;
+    color: #82ab3a;
+    font-family: "Century Old Style";
+    font-size: 200%;
 }
 h2 {
     color: #f2f2f2;
+}
 
+h3{
+    font-family: "Century Old Style";
 }
 label{
     font-size: 20px;
@@ -64,9 +67,7 @@ input:valid+span:after {
     color: green;
 }
 
-input[type=submit],#findBtn,#add{
-
-
+input[type=submit]{
     width: 25%;
     background: #d9d9d9;
     color: #555;
@@ -76,28 +77,13 @@ input[type=submit],#findBtn,#add{
     transition: 0.3s;
     border-radius: 0;
     position: absolute;
-    right:10%;
-
-
+    right:82px;
 }
 
-#findBtn,#add,#search{
-
-    width: 35%;
-    border-spacing: 10px;
-    border: 0px;
-    padding: 10px 10px 10px 10px;
-    position: static;
-    right: 20%;
-
-
-
+input[type=submit]:hover{
+    background: #f2f2f2;
 }
 
-#add{
-    bottom: 0px;
-
-}
 table{
     table-layout: auto;
     position: relative;
@@ -146,13 +132,6 @@ th {
     background: #1abc9c;
 }
 
-#signup{
-    width: 20%;
-    display: flex;
-    flex-direction: column; 
-    justify-content: center; 
-    align-items: center;
-}
 
 
 

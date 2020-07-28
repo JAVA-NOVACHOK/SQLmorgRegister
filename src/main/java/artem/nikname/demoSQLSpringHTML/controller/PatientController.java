@@ -85,26 +85,6 @@ public class PatientController {
         return new IdClass();
     }
 
-//    @GetMapping("/add")
-//    public String add(Model model, @RequestParam String login, String psw) {
-//        System.out.println("In Get Add");
-//        User user = null;
-//        if (securityCheck.checkForInjection(login, psw)) {
-//            user = usersRepository.getUserByLoginAndPassword(login, psw);
-//            System.out.println("User from POST signup: " + user + " login:" + login + " psw:" + psw);
-//        }
-//        if (user == null) {
-//            model.addAttribute("massege", "1");
-//            return "/login";
-//        } else {
-//            users.add(user);
-//        }
-//        System.out.println("User from GET Add:" + user);
-//        model.addAttribute("currentDate", getCurrentDate());
-//        model.addAttribute("user", user);
-//        logger.info("add method mapping");
-//        return "addForm";
-//    }
     @PostMapping("add")
     public String processAdd(@ModelAttribute("idClass") IdClass idClass, @RequestParam int reportNumber, String surname, String name, String fathersName,
             String sex, String birthDate, String deathDate, String expert, Model model) {
@@ -131,27 +111,17 @@ public class PatientController {
     @GetMapping("addNew")
     public String addNewPatient(@ModelAttribute("IdClass") IdClass idClass, Model model) {
         User user = usersRepository.getUserById(idClass.getId());
-        System.out.println("User from Get addNew:" + user);
-        if (user == null) {
-            return "redirect:/login";
-        }
+        if (user == null || !users.contains(user)) {
+            return "redirect:/showLoginForm";
+        } else {
         model.addAttribute("user", user);
         model.addAttribute("id", user.getId());
+        model.addAttribute("currentDate", getCurrentDate());
         return "add-form";
+        }
     }
 
-    @PostMapping(ViewNames.FAIL)
-    public String failAdd(@RequestParam Model model) {
-
-        System.out.println("Fail POST");
-        User user = (User) model.getAttribute("user");
-        model.addAttribute("user", user);
-//        if (user == null) {
-//            return "/";
-//        }
-        logger.info("fail method mapping");
-        return ViewNames.FAIL;
-    }
+    
 
     @GetMapping("success")
     public String success(Model model, @RequestParam int id) {
@@ -167,7 +137,8 @@ public class PatientController {
     }
 
     @GetMapping("home")
-    public String home() {
+    public String home(@ModelAttribute("idClass") IdClass idClass,Model model) {
+        model.addAttribute("id", idClass.getId());
         return "home";
     }
 
@@ -187,6 +158,11 @@ public class PatientController {
             return "find_by_name_rez_form";
         }
     }
+    
+    @GetMapping("searchReasult")
+    public String findConfirmCancel(@ModelAttribute("idClass") IdClass idClass, @RequestParam String searchName, Model model) {
+        return findProcess(idClass, searchName, model);
+    }
 
     @PostMapping("searchReasult")
     public String findProcess(@ModelAttribute("idClass") IdClass idClass, @RequestParam String name, Model model) {
@@ -201,6 +177,7 @@ public class PatientController {
                     System.out.println(patient);
                 }
                 model.addAttribute("id", user.getId());
+                model.addAttribute("searchName", name);
                 model.addAttribute("nullList", list);
                 model.addAttribute("patients", patients);
             }
@@ -209,13 +186,13 @@ public class PatientController {
     }
 
     @GetMapping("fill_db")
-    public void fillDatabase(@RequestParam String tableName) throws IOException {
+    public String fillDatabase(@RequestParam String tableName,int id,Model model) throws IOException {
 
         try {
-
             BufferedReader reader
                     = new BufferedReader(new InputStreamReader(new FileInputStream("C:\\Users\\Master\\Desktop\\morgPoltava2020.txt"), "UTF-8"));
             String line = "";
+            int records = 0;
             while ((line = reader.readLine()) != null) {
                 ArrayList<String> arr = new ArrayList<>(Arrays.asList(line.split(" ")));
                 int size = arr.size();
@@ -224,14 +201,19 @@ public class PatientController {
                 arr.remove(size - 1);
                 synchronized (patientService) {
                     patientService.save(Integer.parseInt(arr.get(0)), arr.get(1), arr.get(2), arr.get(3), arr.get(4),
-                            replaceDots(arr.get(5)), replaceDots(arr.get(6)), arr.get(7), tableName);
+                            Patient.dateForInputDate(replaceDots(arr.get(5))), Patient.dateForInputDate(replaceDots(arr.get(6))), arr.get(7), tableName);
                 }
                 System.out.println("executed");
+                records++;
             }
+            model.addAttribute("records", records);
+            model.addAttribute("message", "Додавання");
+            model.addAttribute("id", id);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return "fill-db-form";
     }
 
     private String replaceDots(String date) {
@@ -269,7 +251,7 @@ public class PatientController {
             int rez = patientService.updatePatient(reportNumber, name, surname,
                     fathersName, sex, birthDate, deathDate, expert, patientId, tableName);
             if (rez < 1) {
-                return ViewNames.FAIL;
+                return "fail-form";
             }
             return "success-form";
         }
@@ -303,6 +285,19 @@ public class PatientController {
         Date currentDate = Calendar.getInstance().getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(currentDate);
+    }
+    
+    @GetMapping("delete")
+    public String delete(@RequestParam int id,String searchName,int patientId,Model model){
+         User user = usersRepository.getUserById(id);
+        String tableName = user.getTableName();
+        patientService.deletePatient(patientId, tableName);
+        model.addAttribute("patients", patientService.getPatientByName(searchName, tableName));
+        model.addAttribute("name", searchName);
+        model.addAttribute("patientId", patientId);
+        model.addAttribute("id", id);
+         
+         return "find_by_name_rez_form";
     }
 
 }

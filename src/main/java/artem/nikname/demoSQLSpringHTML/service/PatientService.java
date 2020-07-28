@@ -20,5 +20,7 @@ public interface PatientService {
 
     int updatePatient(int reportNumber, String name, String surname, String fathersName,
             String sex, String birthDate, String deathDate, String expert, int id, String tableName);
+    
+    int deletePatient(int patientId,String tableName);
 
 }
