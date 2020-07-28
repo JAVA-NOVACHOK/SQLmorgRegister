@@ -41,6 +41,7 @@ import java.util.Date;
 import artem.nikname.demoSQLSpringHTML.repository.UsersRepository;
 import java.util.HashSet;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -114,14 +115,12 @@ public class PatientController {
         if (user == null || !users.contains(user)) {
             return "redirect:/showLoginForm";
         } else {
-        model.addAttribute("user", user);
-        model.addAttribute("id", user.getId());
-        model.addAttribute("currentDate", getCurrentDate());
-        return "add-form";
+            model.addAttribute("user", user);
+            model.addAttribute("id", user.getId());
+            model.addAttribute("currentDate", getCurrentDate());
+            return "add-form";
         }
     }
-
-    
 
     @GetMapping("success")
     public String success(Model model, @RequestParam int id) {
@@ -137,17 +136,21 @@ public class PatientController {
     }
 
     @GetMapping("home")
-    public String home(@ModelAttribute("idClass") IdClass idClass,Model model) {
+    public String home(@ModelAttribute("idClass") IdClass idClass, Model model) {
         model.addAttribute("id", idClass.getId());
         return "home";
     }
 
     @GetMapping("find_by_name_rez")
-    public String find(@ModelAttribute("idClass") IdClass idClass, Model model) {
+    public String find(@ModelAttribute("idClass") IdClass idClass, Model model, @RequestParam(required = false) String searchName) {
         User user = usersRepository.getUserById(idClass.getId());
         if (user == null || !users.contains(user)) {
             return "redirect:/showLoginForm";
         } else {
+            String name = searchName;
+            if (name != null) {
+                model.addAttribute("searchName", name);
+            }
             System.out.println("find method");
             List<Patient> list = null;
             List<Patient> patients = new ArrayList<>();
@@ -158,7 +161,7 @@ public class PatientController {
             return "find_by_name_rez_form";
         }
     }
-    
+
     @GetMapping("searchReasult")
     public String findConfirmCancel(@ModelAttribute("idClass") IdClass idClass, @RequestParam String searchName, Model model) {
         return findProcess(idClass, searchName, model);
@@ -186,7 +189,7 @@ public class PatientController {
     }
 
     @GetMapping("fill_db")
-    public String fillDatabase(@RequestParam String tableName,int id,Model model) throws IOException {
+    public String fillDatabase(@RequestParam String tableName, int id, Model model) throws IOException {
 
         try {
             BufferedReader reader
@@ -221,7 +224,7 @@ public class PatientController {
     }
 
     @GetMapping("edit")
-    public String edit(@ModelAttribute ("idClass") IdClass idClass,@RequestParam int patientId, Model model) {
+    public String edit(@ModelAttribute("idClass") IdClass idClass, @RequestParam int patientId, Model model) {
         User user = usersRepository.getUserById(idClass.getId());
         if (user == null || !users.contains(user)) {
             return "redirect:/showLoginForm";
@@ -286,18 +289,22 @@ public class PatientController {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(currentDate);
     }
-    
+
     @GetMapping("delete")
-    public String delete(@RequestParam int id,String searchName,int patientId,Model model){
-         User user = usersRepository.getUserById(id);
+    public String delete(@RequestParam int id, String searchName, int patientId, boolean yesAnswer, Model model) {
+        User user = usersRepository.getUserById(id);
         String tableName = user.getTableName();
-        patientService.deletePatient(patientId, tableName);
+        if (yesAnswer) {
+            patientService.deletePatient(patientId, tableName);
+            System.out.println("In delete yesAnswer");
+        }
         model.addAttribute("patients", patientService.getPatientByName(searchName, tableName));
-        model.addAttribute("name", searchName);
+        model.addAttribute("yesAnswer", yesAnswer);
+        model.addAttribute("searchName", searchName);
         model.addAttribute("patientId", patientId);
         model.addAttribute("id", id);
-         
-         return "find_by_name_rez_form";
+
+        return "find_by_name_rez_form";
     }
 
 }

@@ -143,19 +143,23 @@
                     </td>
                     <td>
                         <form id="myForm" method="get" >
-                            <script th:inline="javascript">
+                            <script>
                                 function confirmDelete() {
                                     var conf = confirm("Ви впернені, що хочете видалити запис?");
                                     if (conf) {
+                                        document.getElementById("yesAnswer").checked = true;
                                         document.getElementById("myForm").action = "/patient/delete";
-                                    } else {
-                                        document.getElementById("myForm").action = "/patient/searchReasult";
+                                    } 
+                                    else{
+                                        document.getElementById("yesAnswer").checked = false;
+                                        document.getElementById("myForm").action = "/patient/delete";
                                     }
                                 }
                                 function refresh() {
                                     window.location.reload();
                                 }
                             </script>
+                            <input type="checkbox" hidden="true" id="yesAnswer" name="yesAnswer">
                             <input type="number" hidden="true" style="max-width: 0px;" th:value="${id}" name="id">                        
                             <input type="text" hidden="true" style="max-width: 0px;" th:value="${searchName}" name="searchName">                        
                             <input type="number" hidden="true" style="max-width: 0px;"th:value="${patient.patientId}" name="patientId">
