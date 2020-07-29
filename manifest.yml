@@ -1,0 +1,8 @@
+applications:
+- name: regist-app
+path: target/regist-app.jar
+domain: cfapps.io
+memory: 950M
+instances: 1
+service:
+    - mysql

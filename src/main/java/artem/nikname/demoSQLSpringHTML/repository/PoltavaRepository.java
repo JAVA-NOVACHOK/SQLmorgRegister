@@ -52,7 +52,7 @@ public interface PoltavaRepository extends PatientRepository,JpaRepository<Patie
     @Override
     @Modifying(clearAutomatically = true)
     @Transactional
-    @Query(value = "ALTER TABLE " + TABLE + " AUTO_INCREMENT = 1",
+    @Query(value = "UPDATE hibernate_sequence SET next_val = 1",
             nativeQuery = true)
     void resetPK();
 }

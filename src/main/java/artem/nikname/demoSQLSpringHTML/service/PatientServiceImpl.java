@@ -46,7 +46,7 @@ public class PatientServiceImpl implements PatientService {
             String sex, String birthDate, String deathDate, String expert, String tableName) {
         setRepository(tableName);
         Patient patient = setPatient(reportNumber, surname, name, fathersName, sex, birthDate, deathDate, expert, tableName);
-        if(repository == null){
+        if (repository == null) {
             return null;
         }
         return repository.save(patient);
@@ -55,7 +55,7 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient save(Patient patient, String tableName) {
         setRepository(tableName);
-        if(repository == null){
+        if (repository == null) {
             return null;
         }
         return repository.save(patient);
@@ -64,7 +64,7 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public List<Patient> getPatientByName(String name, String tableName) {
         setRepository(tableName);
-        if(repository == null){
+        if (repository == null) {
             return null;
         }
         return repository.getPatientByName(name);
@@ -73,7 +73,7 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient getPatientById(int id, String tableName) {
         setRepository(tableName);
-        if(repository == null){
+        if (repository == null) {
             return null;
         }
         Patient patient = repository.getPatientById(id);
@@ -87,7 +87,7 @@ public class PatientServiceImpl implements PatientService {
     public int updatePatient(int reportNumber, String name, String surname, String fathersName,
             String sex, String birthDate, String deathDate, String expert, int id, String tableName) {
         setRepository(tableName);
-        if(repository == null){
+        if (repository == null) {
             return 0;
         }
         return repository.updatePatient(reportNumber, name, surname, fathersName, sex,
@@ -126,6 +126,12 @@ public class PatientServiceImpl implements PatientService {
     public int deletePatient(int patientId, String tableName) {
         setRepository(tableName);
         return repository.deletePatient(patientId);
+    }
+
+    @Override
+    public void resetPK(String tableName) {
+        setRepository(tableName);
+        repository.resetPK();
     }
 
 }

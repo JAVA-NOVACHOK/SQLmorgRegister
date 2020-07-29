@@ -37,11 +37,15 @@ public class LoginController {
         return new LoginForm();
     }
     
+    @GetMapping("/")
+    public String start(Model model){
+        model.addAttribute("massege", null);
+        return "login-form";
+    }
+    
     @GetMapping("showLoginForm")
     public String startSignUp(Model model) {
-        System.out.println("SIGNup GET!");
         model.addAttribute("massege", null);
-        System.out.println("SIGNup GET out!");
         return "login-form";
     }
 

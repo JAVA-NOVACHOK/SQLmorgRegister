@@ -18,24 +18,21 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Master
  */
-
 public interface PatientRepository {
-    
-    
+
     List<Patient> getPatientByName(String name);
 
-    
     Patient getPatientById(int id);
 
-   
     int updatePatient(int reportNumber, String name, String surname, String fathersName,
             String sex, String birthDate, String deathDate, String expert, int id);
-    
+
     Patient save(Patient p);
-    
+
     public List<Patient> findAll();
-    
+
     int deletePatient(int patientId);
+
     void resetPK();
 
 }

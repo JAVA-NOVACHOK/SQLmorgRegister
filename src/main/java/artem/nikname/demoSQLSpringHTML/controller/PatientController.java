@@ -115,6 +115,7 @@ public class PatientController {
         if (user == null || !users.contains(user)) {
             return "redirect:/showLoginForm";
         } else {
+            patientService.resetPK(user.getTableName());
             model.addAttribute("user", user);
             model.addAttribute("id", user.getId());
             model.addAttribute("currentDate", getCurrentDate());
@@ -152,9 +153,10 @@ public class PatientController {
                 model.addAttribute("searchName", name);
             }
             System.out.println("find method");
-            List<Patient> list = null;
+//            List<Patient> list = null;
             List<Patient> patients = new ArrayList<>();
-            model.addAttribute("nullList", list);
+//            model.addAttribute("nullList", list);
+            model.addAttribute("messageNum", 0);
             model.addAttribute("patients", patients);
             model.addAttribute("user", user);
             model.addAttribute("id", idClass.getId());
@@ -181,7 +183,7 @@ public class PatientController {
                 }
                 model.addAttribute("id", user.getId());
                 model.addAttribute("searchName", name);
-                model.addAttribute("nullList", list);
+                model.addAttribute("messageNum", 1);
                 model.addAttribute("patients", patients);
             }
             return "find_by_name_rez_form";
@@ -298,8 +300,8 @@ public class PatientController {
             patientService.deletePatient(patientId, tableName);
             System.out.println("In delete yesAnswer");
         }
+        model.addAttribute("messageNum", 1);
         model.addAttribute("patients", patientService.getPatientByName(searchName, tableName));
-        model.addAttribute("yesAnswer", yesAnswer);
         model.addAttribute("searchName", searchName);
         model.addAttribute("patientId", patientId);
         model.addAttribute("id", id);

@@ -9,6 +9,7 @@ public interface PatientService {
 
     Patient save(int reportNumber, String surname, String name, String fathersName,
             String sex, String birthDate, String deathDate, String expert, String tableName);
+
     Patient save(Patient patient, String tableName);
 
     List<Patient> getPatientByName(String name, String tableName);
@@ -16,11 +17,13 @@ public interface PatientService {
     Patient getPatientById(int id, String tableName);
 
     Patient setPatient(int reportNumber, String name, String surname, String fathersName,
-            String sex, String birthDate, String deathDate, String expert,String tableName);
+            String sex, String birthDate, String deathDate, String expert, String tableName);
 
     int updatePatient(int reportNumber, String name, String surname, String fathersName,
             String sex, String birthDate, String deathDate, String expert, int id, String tableName);
-    
-    int deletePatient(int patientId,String tableName);
+
+    int deletePatient(int patientId, String tableName);
+
+    void resetPK(String tableName);
 
 }

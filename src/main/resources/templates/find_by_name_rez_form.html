@@ -84,7 +84,9 @@
         <p>Введіть ім'я або прізвище:</p>
         <form class="example" id="find_by_name" method="post" action="/patient/searchReasult">
             <input type="number" hidden="true" th:value="${id}" name="id">
-            <input type="text" id="name" placeholder="Пошук..." name="name">
+            <input type="text" id="name" placeholder="Пошук..." name="name" required 
+                   oninvalid="this.setCustomValidity('Необхідно ввести хоча одну літеру початку ім`я або прізвища!!!')"
+                   oninput="setCustomValidity('')"/>
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
 
@@ -104,7 +106,7 @@
             <thead>
                 <tr>
                     <td colspan="10" style="text-align: center; background-color: #f2f2f2;">
-                        <span th:text="${nullList == null}?'Почніть пошук':
+                        <span th:text="${messageNum < 1}?'Почніть пошук':
                               (${patients.empty}?'Нічого не знайдено':|Знайдено 
                               результатів: ${patients.size()}|)"></span>
 
@@ -149,8 +151,7 @@
                                     if (conf) {
                                         document.getElementById("yesAnswer").checked = true;
                                         document.getElementById("myForm").action = "/patient/delete";
-                                    } 
-                                    else{
+                                    } else {
                                         document.getElementById("yesAnswer").checked = false;
                                         document.getElementById("myForm").action = "/patient/delete";
                                     }
