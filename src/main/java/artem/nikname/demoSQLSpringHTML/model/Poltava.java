@@ -13,8 +13,8 @@ public class Poltava extends Patient{
     }
     
 
-    public Poltava(int reprtNumber, String surname, String name, String fathersName, String sex, String birthDate, String deathDate, String expert) {
-        super(reprtNumber, surname, name, fathersName, sex, birthDate, deathDate, expert);
+    public Poltava(int reprtNumber, String surname, String name, String fathersName, String sex,  String deathDate, String expert) {
+        super(reprtNumber, surname, name, fathersName, sex, deathDate, expert);
     }
 
     

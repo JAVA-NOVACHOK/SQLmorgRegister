@@ -89,15 +89,11 @@ public class PatientController {
     @PostMapping("add")
     public String processAdd(@ModelAttribute("idClass") IdClass idClass, @RequestParam int reportNumber, String surname, String name, String fathersName,
             String sex, String birthDate, String deathDate, String expert, Model model) {
-        System.out.println("In Post Add");
         User user = usersRepository.getUserById(idClass.getId());
-        System.out.println("User from Model Attribute = " + user);
-        System.out.println("User from POST Add:" + user);
         if (user == null) {
             return "redirect:/login";
         } else {
             logger.info("add post method mapping");
-//        Patient patients = new Patient(reportNumber, surname, name, fathersName, sex, birthDate, deathDate, expert);
             model.addAttribute("massege", "Додавання в базу");
             model.addAttribute("id", idClass.getId());
             synchronized (patientService) {
@@ -115,7 +111,6 @@ public class PatientController {
         if (user == null || !users.contains(user)) {
             return "redirect:/showLoginForm";
         } else {
-            patientService.resetPK(user.getTableName());
             model.addAttribute("user", user);
             model.addAttribute("id", user.getId());
             model.addAttribute("currentDate", getCurrentDate());
@@ -125,13 +120,7 @@ public class PatientController {
 
     @GetMapping("success")
     public String success(Model model, @RequestParam int id) {
-        System.out.println("Success Post");
-        System.out.println("");
-
         model.addAttribute("massege", "ededed id = " + id);
-//        if (user == null) {
-//            return "/";
-//        }
         logger.info("success method mapping");
         return "success";
     }
@@ -152,10 +141,7 @@ public class PatientController {
             if (name != null) {
                 model.addAttribute("searchName", name);
             }
-            System.out.println("find method");
-//            List<Patient> list = null;
             List<Patient> patients = new ArrayList<>();
-//            model.addAttribute("nullList", list);
             model.addAttribute("messageNum", 0);
             model.addAttribute("patients", patients);
             model.addAttribute("user", user);
@@ -177,15 +163,11 @@ public class PatientController {
         } else {
             List<Patient> list = new ArrayList<>();
             List<Patient> patients = patientService.getPatientByName(name, user.getTableName());
-            if (patients != null) {
-                for (Patient patient : patients) {
-                    System.out.println(patient);
-                }
+            
                 model.addAttribute("id", user.getId());
                 model.addAttribute("searchName", name);
                 model.addAttribute("messageNum", 1);
                 model.addAttribute("patients", patients);
-            }
             return "find_by_name_rez_form";
         }
     }
@@ -208,7 +190,6 @@ public class PatientController {
                     patientService.save(Integer.parseInt(arr.get(0)), arr.get(1), arr.get(2), arr.get(3), arr.get(4),
                             Patient.dateForInputDate(replaceDots(arr.get(5))), Patient.dateForInputDate(replaceDots(arr.get(6))), arr.get(7), tableName);
                 }
-                System.out.println("executed");
                 records++;
             }
             model.addAttribute("records", records);
@@ -235,7 +216,6 @@ public class PatientController {
             model.addAttribute("id", user.getId());
             model.addAttribute("patient", patient);
             model.addAttribute("currentDate", getCurrentDate());
-            System.out.println("patient = " + patient);
             return "edit-form";
         }
     }
@@ -266,13 +246,9 @@ public class PatientController {
     public String findAll(@RequestParam Model model) {
         User user = (User) model.getAttribute("user");
         model.addAttribute("user", user);
-//        if (user == null) {
-//            return "/";
-//        } else {
         List<Patient> patients = patientService.findAll(user.getTableName());
         model.addAttribute("patients", patients);
         return "showUsers";
-//        }
     }
 
     @GetMapping("exit")
@@ -298,7 +274,6 @@ public class PatientController {
         String tableName = user.getTableName();
         if (yesAnswer) {
             patientService.deletePatient(patientId, tableName);
-            System.out.println("In delete yesAnswer");
         }
         model.addAttribute("messageNum", 1);
         model.addAttribute("patients", patientService.getPatientByName(searchName, tableName));

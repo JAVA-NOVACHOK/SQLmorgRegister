@@ -16,6 +16,7 @@ import artem.nikname.demoSQLSpringHTML.repository.PatientRepository;
 import artem.nikname.demoSQLSpringHTML.repository.PoltavaRepository;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 /**
  *
@@ -64,10 +65,8 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public List<Patient> getPatientByName(String name, String tableName) {
         setRepository(tableName);
-        if (repository == null) {
-            return null;
-        }
-        return repository.getPatientByName(name);
+        List<Patient> list = repository.getPatientByName(name);
+        return list;
     }
 
     @Override

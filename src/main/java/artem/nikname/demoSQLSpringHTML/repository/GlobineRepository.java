@@ -44,7 +44,7 @@ public interface GlobineRepository extends PatientRepository,JpaRepository<Patie
     @Override
     @Modifying(clearAutomatically = true)
     @Transactional
-    @Query(value = "DELETE FROM " + TABLE + " AS p WHERE p.patient_id = ?",
+    @Query(value = "DELETE FROM " + TABLE + " WHERE patient_id = ?",
             nativeQuery = true)
     int deletePatient(int patientId);
     

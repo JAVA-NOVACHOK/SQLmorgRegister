@@ -34,25 +34,23 @@ public class Patient implements Serializable {
     private String name;
     private String fathersName;
     private String sex;
-    private String birthDate;
+    private String yearOfBirth;
     private String deathDate;
     private String expert;
 
     public Patient() {
     }
 
-    public Patient(int reprtNumber, String surname, String name, String fathersName, String sex, String birthDate, String deathDate, String expert) {
+    public Patient(int reprtNumber, String surname, String name, String fathersName, String sex, String deathDate, String expert) {
         this.surname = surname;
         this.reportNumber = reprtNumber;
         this.name = name;
         this.fathersName = fathersName;
         this.sex = sex;
-        this.birthDate = dateToViewMode(birthDate);
-//        this.birthDate = birthDate;
-//        this.deathDate = deathDate;
+        this.yearOfBirth = 
         this.deathDate = dateToViewMode(deathDate);
         this.expert = expert;
-            }
+    }
 
     public static String dateToViewMode(String inputDate) {
         LocalDate date = LocalDate.parse(inputDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -62,6 +60,14 @@ public class Patient implements Serializable {
     public static String dateForInputDate(String viewDate) {
         LocalDate date = LocalDate.parse(viewDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+    
+    public static String setYear(String inputDate){
+        if(inputDate.equals("")){
+            return "";
+        }else{
+            LocalDate date = LocalDate.parse(inputDate, DateTimeFormatter.ofPattern(inputDate));
+        }
     }
 
     public int getReportNumber() {
@@ -79,8 +85,6 @@ public class Patient implements Serializable {
     public void setPatientId(int patientId) {
         this.patientId = patientId;
     }
-
-   
 
     public String getSurname() {
         return surname;
@@ -137,10 +141,6 @@ public class Patient implements Serializable {
     public void setExpert(String expert) {
         this.expert = expert;
     }
-
-   
-    
-    
 
     @Override
     public int hashCode() {
