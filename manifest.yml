@@ -5,4 +5,4 @@ domain: cfapps.io
 memory: 950M
 instances: 1
 services:
-- mysql
+- mysql-db

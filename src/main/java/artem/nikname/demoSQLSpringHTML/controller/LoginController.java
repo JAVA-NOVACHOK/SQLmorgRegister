@@ -65,6 +65,7 @@ public class LoginController {
         }
         PatientController.users.add(user);
         model.addAttribute("currentDate", PatientController.getCurrentDate());
+        model.addAttribute("currentYear", PatientController.getCurrentYear());
         model.addAttribute("user", user);
         model.addAttribute("id", user.getId());
         System.out.println("Successful signup!");

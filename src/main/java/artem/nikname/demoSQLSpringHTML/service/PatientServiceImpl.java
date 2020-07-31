@@ -76,8 +76,7 @@ public class PatientServiceImpl implements PatientService {
             return null;
         }
         Patient patient = repository.getPatientById(id);
-        patient.setBirthDate(Patient.dateForInputDate(patient.getBirthDate()));
-        patient.setDeathDate(Patient.dateForInputDate(patient.getDeathDate()));
+        patient.setExamDate(Patient.dateForInputDate(patient.getExamDate()));
         return patient;
 
     }

@@ -22,7 +22,7 @@
                         <label for="report">Введіть № висновку експерта або акту</label>
                         <input id="report" type="number" name="reportNumber" required 
                                placeholder="№ висновок експерта або акту" min="1" autofocus 
-                                oninvalid="this.setCustomValidity('Необхідно ввести № Висновку експерта!!!')"
+                               oninvalid="this.setCustomValidity('Необхідно ввести № Висновку експерта!!!')"
                                oninput="setCustomValidity('')"/>
                         <span class="validity"></span>
                     </div>
@@ -47,18 +47,25 @@
                         <input id="sex" type="text" name="sex" placeholder="стать"   />
                     </div>
                     <div class="block">
-                        <label for="birthDate" >Введіть дату народження</label>
-                        <input id="birthDate" type="date" name="birthDate" required min="1900-01-01" th:max="${currentDate}"/>
-                        <span class="validity"></span>
+                        <label for="yearOfBirth" >Введіть рік народження</label>
+                        <select id="yearOfBirth" name="yearOfBirth" placeholder="рік">
+                            <option th:each="i : ${#numbers.sequence(1920, __${currentYear}__)}" th:value="${i}" th:text="${i}">
+                            </option>
+                            <option selected="selected" ></option>
+                        </select>
                     </div>
                     <div class="block">
-                        <label for="deathDate" >Введіть дату смерті</label>
-                        <input id="deathDate" type="date" name="deathDate" required min="1900-01-01" th:max="${currentDate}"/>
+                        <label for="examDate" >Введіть дату початку дослідження</label>
+                        <input id="examDate" type="date" name="examDate" required min="1900-01-01" th:max="${currentDate}"
+                               oninvalid="this.setCustomValidity('Необхідно ввести дату початку експертизи!!!')"
+                               oninput="setCustomValidity('')"/>
                         <span class="validity"></span>
                     </div>
                     <div class="block">
                         <label for="expert" >Введіть прізвище та ініціали експерта</label>
-                        <input id="expert" type="text" name="expert" placeholder="eксперт" required/>
+                        <input id="expert" type="text" name="expert" placeholder="eксперт" required
+                               oninvalid="this.setCustomValidity('Необхідно ввести прізвище та ініціали експерта')"
+                               oninput="setCustomValidity('')"/>
                         <span class="validity"></span>
                     </div>
                     <div class="block">
@@ -67,7 +74,7 @@
                     </div>
                 </form>  
             </div>
-            
+
         </body>
     </div>
 

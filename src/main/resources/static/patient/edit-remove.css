@@ -1,0 +1,26 @@
+#remove{
+    background-color: #ff5454; 
+    border: 1px solid black;
+}
+#remove:hover{
+    background-color: #f2a229;
+}
+
+#remove:active{
+    background-color: #67b013;
+}
+
+#edit{
+    background-color:  #adc3ff;
+    border: 1px solid black;
+}
+
+#edit:hover{
+    background-color: #f0f0f0;
+    border: 1px solid black;
+}
+
+#edit:active{
+    background-color: #d6f0b4;
+    border: 1px solid black;
+}

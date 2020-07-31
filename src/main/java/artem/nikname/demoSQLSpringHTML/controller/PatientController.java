@@ -7,6 +7,7 @@ package artem.nikname.demoSQLSpringHTML.controller;
 
 import artem.nikname.demoSQLSpringHTML.model.IdClass;
 import artem.nikname.demoSQLSpringHTML.model.Patient;
+import artem.nikname.demoSQLSpringHTML.model.SearchClass;
 import artem.nikname.demoSQLSpringHTML.model.User;
 import artem.nikname.demoSQLSpringHTML.security.SecurityCheck;
 import artem.nikname.demoSQLSpringHTML.util.MappingNames;
@@ -70,6 +71,21 @@ public class PatientController {
         this.patientService = patientService;
         this.securityCheck = securityCheck;
     }
+    
+    
+     public static String getCurrentDate() {
+        Date currentDate = Calendar.getInstance().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(currentDate);
+    }
+     
+     public static int getCurrentYear(){
+         Date currentDate = Calendar.getInstance().getTime();
+         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+         return Integer.parseInt(sdf.format(currentDate));
+     }
+     
+     
 
     @ModelAttribute("user")
     public User getUser() {
@@ -85,10 +101,17 @@ public class PatientController {
     public IdClass getIdClass() {
         return new IdClass();
     }
+    
+    @ModelAttribute("searchClass")
+    public SearchClass getSearchClass(){
+        return new SearchClass();
+    }
+    
+    
 
     @PostMapping("add")
     public String processAdd(@ModelAttribute("idClass") IdClass idClass, @RequestParam int reportNumber, String surname, String name, String fathersName,
-            String sex, String birthDate, String deathDate, String expert, Model model) {
+            String sex, String yearOfBirth, String examDate, String expert, Model model) {
         User user = usersRepository.getUserById(idClass.getId());
         if (user == null) {
             return "redirect:/login";
@@ -97,7 +120,7 @@ public class PatientController {
             model.addAttribute("massege", "Додавання в базу");
             model.addAttribute("id", idClass.getId());
             synchronized (patientService) {
-                if (patientService.save(reportNumber, surname, name, fathersName, sex, birthDate, deathDate, expert, user.getTableName()) != null) {
+                if (patientService.save(reportNumber, surname, name, fathersName, sex, yearOfBirth, examDate, expert, user.getTableName()) != null) {
                     return "success-form";
                 }
             }
@@ -114,6 +137,7 @@ public class PatientController {
             model.addAttribute("user", user);
             model.addAttribute("id", user.getId());
             model.addAttribute("currentDate", getCurrentDate());
+            model.addAttribute("currentYear", getCurrentYear());
             return "add-form";
         }
     }
@@ -132,7 +156,7 @@ public class PatientController {
     }
 
     @GetMapping("find_by_name_rez")
-    public String find(@ModelAttribute("idClass") IdClass idClass, Model model, @RequestParam(required = false) String searchName) {
+    public String find(@ModelAttribute("idClass") IdClass idClass, Model model, @RequestParam String searchName) {
         User user = usersRepository.getUserById(idClass.getId());
         if (user == null || !users.contains(user)) {
             return "redirect:/showLoginForm";
@@ -144,17 +168,14 @@ public class PatientController {
             List<Patient> patients = new ArrayList<>();
             model.addAttribute("messageNum", 0);
             model.addAttribute("patients", patients);
+            model.addAttribute("currentYear", getCurrentYear());
             model.addAttribute("user", user);
             model.addAttribute("id", idClass.getId());
             return "find_by_name_rez_form";
         }
     }
 
-    @GetMapping("searchReasult")
-    public String findConfirmCancel(@ModelAttribute("idClass") IdClass idClass, @RequestParam String searchName, Model model) {
-        return findProcess(idClass, searchName, model);
-    }
-
+    
     @PostMapping("searchReasult")
     public String findProcess(@ModelAttribute("idClass") IdClass idClass, @RequestParam String name, Model model) {
         User user = usersRepository.getUserById(idClass.getId());
@@ -216,14 +237,15 @@ public class PatientController {
             model.addAttribute("id", user.getId());
             model.addAttribute("patient", patient);
             model.addAttribute("currentDate", getCurrentDate());
+            model.addAttribute("currentYear", getCurrentYear());
             return "edit-form";
         }
     }
 
     @PostMapping("edit")
     public String processingEdit(@RequestParam int reportNumber, String surname, String name,
-            String fathersName, String sex, String birthDate,
-            String deathDate, String expert, int patientId, int id, Model model) {
+            String fathersName, String sex, String yearOfBirth,
+            String examDate, String expert, int patientId, int id, Model model) {
         User user = usersRepository.getUserById(id);
         if (user == null || !users.contains(user)) {
             return "redirect:/showLoginForm";
@@ -231,10 +253,9 @@ public class PatientController {
             model.addAttribute("id", id);
             model.addAttribute("massege", "Редагування");
             String tableName = user.getTableName();
-            birthDate = Patient.dateToViewMode(birthDate);
-            deathDate = Patient.dateToViewMode(deathDate);
+            examDate = Patient.dateToViewMode(examDate);
             int rez = patientService.updatePatient(reportNumber, name, surname,
-                    fathersName, sex, birthDate, deathDate, expert, patientId, tableName);
+                    fathersName, sex, yearOfBirth, examDate, expert, patientId, tableName);
             if (rez < 1) {
                 return "fail-form";
             }
@@ -262,11 +283,7 @@ public class PatientController {
         return "redirect:/showLoginForm";
     }
 
-    public static String getCurrentDate() {
-        Date currentDate = Calendar.getInstance().getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(currentDate);
-    }
+   
 
     @GetMapping("delete")
     public String delete(@RequestParam int id, String searchName, int patientId, boolean yesAnswer, Model model) {

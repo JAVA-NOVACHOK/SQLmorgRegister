@@ -25,7 +25,7 @@ public interface PatientRepository {
     Patient getPatientById(int id);
 
     int updatePatient(int reportNumber, String name, String surname, String fathersName,
-            String sex, String birthDate, String deathDate, String expert, int id);
+            String sex, String yearOfBirth, String examDate, String expert, int id);
 
     Patient save(Patient p);
 

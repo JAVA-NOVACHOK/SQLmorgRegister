@@ -35,13 +35,16 @@ input[type=text], input[type=password] {
 }
 
 
-.container {
+.loginContainer {
   padding: 16px;
-  width: 300px;
-  position: relative;
+  width: 250px;
+  position: absolute;
+  left: 50%;
   top: 15%;
-  left: 40%;
+  transform: translate(-50%, -15%);
+  
 }
+
 
 span.psw {
   float: right;

@@ -44,16 +44,19 @@
                         <input id="sex" type="text" name="sex" th:value="${patient.sex}" />
                     </div>
                     <div class="block">
-                        <label for="birthDate" > дата народження</label>
-                        <input id="birthDate" type="date" name="birthDate" 
-                               pattern="dd-MM-yyyy" th:value="${patient.birthDate}"
-                               required min="1900-01-01" th:max="${currentDate}" />
-                        <span class="validity"></span>
+                        <label for="yearOfBirth" >рік народження</label>
+                        <select id="yearOfBirth" name="yearOfBirth">
+                            <option th:each="i : ${#numbers.sequence(1920, __${currentYear}__)}" th:value="${i}" th:text="${i}"
+                                    th:selected="${i==__${patient.yearOfBirth}__}">
+                            </option>
+                            <option th:selected="${patient.yearOfBirth == '0'}" ></option>
+                            <option></option>
+                        </select>
                     </div>
                     <div class="block">
-                        <label for="deathDate" >дата смерті</label>
-                        <input id="deathDate" type="date" name="deathDate" 
-                               pattern="dd-MM-yyyy" th:value="${patient.deathDate}"
+                        <label for="examDate" >дата смерті</label>
+                        <input id="examDate" type="date" name="examDate" 
+                               pattern="dd-MM-yyyy" th:value="${patient.examDate}"
                                required min="1900-01-01" th:max="${currentDate}" />
                         <span class="validity"></span>
                     </div>

@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html id="page" lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head id="head">
+    <head id="head" >
         <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" type="text/css" href="wide-search.css">
+        <link rel="stylesheet" type="text/css" href="edit-remove.css">
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -16,7 +18,16 @@
                 box-sizing: border-box;
             }
 
-            form.example input[type=text] {
+            h2{
+                font-size: 16px;
+                color: black;
+            }
+            p{
+                color: black;
+            }
+
+            form.example input[type=text],form.form-inline input[type=text],
+            form.form-inline input[type=number],select{
                 padding: 10px;
                 font-size: 17px;
                 border: 1px solid grey;
@@ -25,7 +36,7 @@
                 background: #f1f1f1;
             }
 
-            form.example button {
+            form.example button,form.form-inline button{
                 float: left;
                 width: 20%;
                 padding: 10px;
@@ -47,59 +58,101 @@
                 display: table;
             }
 
-            #remove{
-                background-color: #ff5454; 
-                border: 1px solid black;
-            }
-            #remove:hover{
-                background-color: #f2a229;
+            #wideSearchBtn{
+                background-color: #c6cc70;
+
+                border: 0px;
+                padding: 8px 8px 8px 8px;
+                text-decoration: none;
+                font-size: 30px;
+                color: #67b013;
+                display: block;
             }
 
-            #remove:active{
-                background-color: #67b013;
+            #wideSearchBtn:hover {
+                color: #f1f1f1;
+            }
+            #wideSearchBtn:focus {
+                outline:0;
             }
 
-            #edit{
-                background-color:  #adc3ff;
-                border: 1px solid black;
-            }
 
-            #edit:hover{
-                background-color: #f0f0f0;
-                border: 1px solid black;
-            }
-
-            #edit:active{
-                background-color: #d6f0b4;
-                border: 1px solid black;
-            }
 
 
         </style>
-    </head>
-    <body>
+        <script>
 
-        <h2>Пошук за ім'ям або прізвищем</h2>
+            function myFunction() {
+                var x = document.getElementById("myDIV");
+                if (x.hidden === true) {
+                    x.hidden = false;
+                } else {
+                    x.hidden = true;
+                }
+            }
 
-        <p>Введіть ім'я або прізвище:</p>
-        <form class="example" id="find_by_name" method="post" action="/patient/searchReasult">
-            <input type="number" hidden="true" th:value="${id}" name="id">
-            <input type="text" id="name" placeholder="Пошук..." name="name" required 
-                   oninvalid="this.setCustomValidity('Необхідно ввести хоча одну літеру початку ім`я або прізвища!!!')"
-                   oninput="setCustomValidity('')"/>
+            function confirmDelete() {
+                var conf = confirm("Ви впернені, що хочете видалити запис?");
+                if (conf) {
+                    document.getElementById("yesAnswer").checked = true;
+                    document.getElementById("deleteForm").action = "/patient/delete";
+                } else {
+                    document.getElementById("yesAnswer").checked = false;
+                    document.getElementById("deleteForm").action = "/patient/delete";
+                }
+            }
+            function refresh() {
+                window.location.reload();
+            }
+        </script>
+
+    <h2>Пошук за ім'ям або прізвищем</h2>
+
+    <p>Введіть ім'я або прізвище:</p>
+    <form class="example" id="find_by_name" method="post" action="/patient/searchReasult">
+        <input type="number" hidden="true" th:value="${id}" name="id">
+        <input type="text" id="name" placeholder="Пошук..." name="name" required 
+               oninvalid="this.setCustomValidity('Необхідно ввести хоча одну літеру початку ім`я або прізвища!!!')"
+               oninput="setCustomValidity('')"/>
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+    <div style="display: flex; flex-flow: row;">
+        <button id="wideSearchBtn" onclick="myFunction()"><i class="fa fa-fw fa-plus-circle"></i></button>
+        <label for="wideSearchBtn"> - Розширений пошук</label>
+    </div>
+
+
+    <div id="myDIV" hidden="true">
+        <p>Розширений пошук</p>
+
+        <form class="form-inline" action="/find_by_name_rez" >
+            <label for="name">Прізвище</label>
+            <input type="text" id="surname" name="surname" placeholder="прізвище">
+            <label for="name">Ім'я</label>
+            <input type="text" id="name" name="name" placeholder="ім'я">
+            <label for="yearFrom">Рік:&nbspвід</label>
+            <select id="yearFrom" name="yearFrom">
+                <option th:each="i : ${#numbers.sequence(2010, __${currentYear}__)}" th:value="${i}" th:text="${i}">
+                </option>
+                <option selected="selected"></option>
+            </select>
+            <label for="yearTo">до</label>
+            <select id="yearTo" name="yearTo">
+                <option th:each="i : ${#numbers.sequence(2010, __${currentYear}__)}" th:value="${i}" th:text="${i}">
+                </option>
+                <option selected="selected"></option>
+            </select>
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
-
-        <p>Поки що не працює, Пошук по даті</p>
-        <form class="example" action="/find_by_name_rez" style="margin:auto;max-width:300px">
-            <input type="text" id="name" placeholder="Search.." name="name">
-            <button type="submit"><i class="fa fa-search"></i></button>
-        </form>
-
-    </head>
+    </div>
 
 
-<body class="main"> 
+
+</head>
+
+
+
+<body class="main" onload = "closeWideSearch()"> 
 
     <div>
         <table style="overflow-x: auto;">
@@ -118,8 +171,8 @@
                     <th>Ім'я</th>
                     <th>По-батькові</th>
                     <th>стать</th>
-                    <th>дата народження</th>
-                    <th>дата смерті</th>
+                    <th>рік народження</th>
+                    <th>дата розтину</th>
                     <th>експерт</th>
                     <th></th>
                     <th></th>
@@ -134,8 +187,8 @@
                     <td th:text="${patient.name}">Ім'я</td>
                     <td th:text="${patient.fathersName}">По-батькові</td>
                     <td th:text="${patient.sex}">стать</td>
-                    <td th:text="${patient.birthDate}">дата народження</td>
-                    <td th:text="${patient.deathDate}">дата смерті</td>
+                    <td th:text="${patient.yearOfBirth == '0' ? '' : patient.yearOfBirth}">рік народження</td>
+                    <td th:text="${patient.examDate}">дата смерті</td>
                     <td th:text="${patient.expert}">експерт</td>
                     <td ><form action="/patient/edit" method="get">
                             <input type="number" hidden="true" th:value="${id}" name="id">
@@ -144,22 +197,8 @@
                         </form>
                     </td>
                     <td>
-                        <form id="myForm" method="get" >
-                            <script>
-                                function confirmDelete() {
-                                    var conf = confirm("Ви впернені, що хочете видалити запис?");
-                                    if (conf) {
-                                        document.getElementById("yesAnswer").checked = true;
-                                        document.getElementById("myForm").action = "/patient/delete";
-                                    } else {
-                                        document.getElementById("yesAnswer").checked = false;
-                                        document.getElementById("myForm").action = "/patient/delete";
-                                    }
-                                }
-                                function refresh() {
-                                    window.location.reload();
-                                }
-                            </script>
+                        <form id="deleteForm" method="get" >
+
                             <input type="checkbox" hidden="true" id="yesAnswer" name="yesAnswer">
                             <input type="number" hidden="true" style="max-width: 0px;" th:value="${id}" name="id">                        
                             <input type="text" hidden="true" style="max-width: 0px;" th:value="${searchName}" name="searchName">                        

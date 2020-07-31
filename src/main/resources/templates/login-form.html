@@ -7,21 +7,21 @@
         <title>Вхід до бази</title>
     </head>
     <body align="center">
-
-        <h2>Вхід до бази</h2>
-
-        <form  action="/goIn" method="post" model>
+        <div class="loginContainer" >
             <div class="container">
-                <label  style="color: red;">
-                    <span th:text="${massege == null}?'':'Пароль або логін введено неправильно'">
-                    </span>
-                </label>
-                <label for="login"><b>Логін</b></label>
-                <input type="text" placeholder="Введіть логін" name="login" required >
-                <label for="psw"><b>Пароль</b></label>
-                <input type="text" placeholder="Введіть пароль" name="psw" required >
-                <input type="submit" id="button" value="Увійти">
+                <form  action="/goIn" method="post" >
+                    <h2>Вхід до бази</h2>
+                    <label  style="color: red;">
+                        <span th:text="${massege == null}?'':'Пароль або логін введено неправильно'">
+                        </span>
+                    </label>
+                    <label for="login"><b>Логін</b></label>
+                    <input type="text" placeholder="Введіть логін" name="login" required >
+                    <label for="psw"><b>Пароль</b></label>
+                    <input type="text" placeholder="Введіть пароль" name="psw" required >
+                    <input type="submit" id="button" value="Увійти">
+                </form>
             </div>
-        </form>
+        </div>
     </body>
 </html>

@@ -19,9 +19,15 @@ public class Globine extends Patient{
     public Globine() {
     }
 
-    public Globine(int reprtNumber, String surname, String name, String fathersName, String sex,  String deathDate, String expert) {
-        super(reprtNumber, surname, name, fathersName, sex, deathDate, expert);
+    public Globine(int reprtNumber, String surname, String name, 
+            String fathersName, String sex, String yearOfBirth, 
+            String examDate, String expert) {
+        super(reprtNumber, surname, name, fathersName, sex, yearOfBirth, examDate, expert);
     }
+
+   
+    
+    
     
     
 }

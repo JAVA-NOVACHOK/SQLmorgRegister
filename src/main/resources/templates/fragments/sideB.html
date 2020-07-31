@@ -13,7 +13,8 @@
 
                         .sidebar {
                             height: 100%;
-                            width: 160px;
+                            width: 8%;
+                            min-width: 100px;
                             position: fixed;
                             z-index: 1;
                             top: 0;
@@ -39,11 +40,20 @@
                             margin-left: 160px; /* Same as the width of the sidenav */
                             padding: 0px 10px;
                         }
-
-                        @media screen and (max-height: 450px) {
+                        @media screen and (max-width: 650px){
                             .sidebar {padding-top: 15px;}
                             .sidebar a {font-size: 18px;}
+                            .main{margin-left: 110px;}
+                            th,h1,h2,h3{font-size: 14px;}
+                            
                         }
+
+                        @media screen and (max-height: 650px) {
+                            .sidebar {padding-top: 15px;}
+                            .sidebar a {font-size: 18px;}
+                            
+                        }
+
                     </style>
                 </head>
                 <body>

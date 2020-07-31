@@ -35,20 +35,20 @@ public class Patient implements Serializable {
     private String fathersName;
     private String sex;
     private String yearOfBirth;
-    private String deathDate;
+    private String examDate;
     private String expert;
 
     public Patient() {
     }
 
-    public Patient(int reprtNumber, String surname, String name, String fathersName, String sex, String deathDate, String expert) {
+    public Patient(int reprtNumber, String surname, String name, String fathersName, String sex, String yearOfBirth, String examDate, String expert) {
         this.surname = surname;
         this.reportNumber = reprtNumber;
         this.name = name;
         this.fathersName = fathersName;
         this.sex = sex;
-        this.yearOfBirth = 
-        this.deathDate = dateToViewMode(deathDate);
+        this.yearOfBirth = yearOfBirth;
+        this.examDate = dateToViewMode(examDate);
         this.expert = expert;
     }
 
@@ -61,13 +61,25 @@ public class Patient implements Serializable {
         LocalDate date = LocalDate.parse(viewDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
-    
-    public static String setYear(String inputDate){
-        if(inputDate.equals("")){
-            return "";
-        }else{
-            LocalDate date = LocalDate.parse(inputDate, DateTimeFormatter.ofPattern(inputDate));
+
+    public String getYearOfBirth() {
+        if (yearOfBirth.equals("")) {
+            System.out.println("yearOfBirth = 0");
+            return "0";
         }
+        return yearOfBirth;
+    }
+
+    public void setYearOfBirth(String yearOfBirth) {
+        this.yearOfBirth = yearOfBirth;
+    }
+
+    public String getExamDate() {
+        return examDate;
+    }
+
+    public void setExamDate(String examDate) {
+        this.examDate = examDate;
     }
 
     public int getReportNumber() {
@@ -118,22 +130,6 @@ public class Patient implements Serializable {
         this.sex = sex;
     }
 
-    public String getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(String birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public String getDeathDate() {
-        return deathDate;
-    }
-
-    public void setDeathDate(String deathDate) {
-        this.deathDate = deathDate;
-    }
-
     public String getExpert() {
         return expert;
     }
@@ -169,10 +165,11 @@ public class Patient implements Serializable {
 
     @Override
     public String toString() {
-        return "Patient{" + "id = " + patientId + ", report number =" + reportNumber + ", surname=" + surname + ", name="
-                + name + ", fathersName=" + fathersName + ", sex=" + sex
-                + ", birthDate=" + birthDate + ", deathDate=" + deathDate
-                + ", expert=" + expert + '}';
+        return "Patient{" + "patientId=" + patientId + ", reportNumber="
+                + reportNumber + ", surname=" + surname + ", name=" + name
+                + ", fathersName=" + fathersName + ", sex=" + sex
+                + ", yearOfBirth=" + yearOfBirth + ", examDate="
+                + examDate + ", expert=" + expert + '}';
     }
 
 }
