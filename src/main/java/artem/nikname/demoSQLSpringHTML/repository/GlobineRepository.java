@@ -54,5 +54,9 @@ public interface GlobineRepository extends PatientRepository,JpaRepository<Patie
     @Query(value = "ALTER TABLE " + TABLE + " AUTO_INCREMENT = 1",
             nativeQuery = true)
     void resetPK();
+    
+    @Query(value = "SELECT p FROM " + TABLE + " p WHERE p.name LIKE ?1% AND p.surname LIKE ?2% "
+            + "AND p.examDate BETWEEN ?3 AND ?4")
+    List<Patient> getPatientByNameSurnameYear(String name,String surname,String yearFrom,String yearTo);
 
 }

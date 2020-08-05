@@ -1,6 +1,7 @@
 package artem.nikname.demoSQLSpringHTML.service;
 
 import artem.nikname.demoSQLSpringHTML.model.Patient;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface PatientService {
@@ -8,7 +9,7 @@ public interface PatientService {
     List<Patient> findAll(String tableName);
 
     Patient save(int reportNumber, String surname, String name, String fathersName,
-            String sex, String birthDate, String deathDate, String expert, String tableName);
+            String sex, String yearOfBirth, LocalDate examDate, String expert, String tableName);
 
     Patient save(Patient patient, String tableName);
 
@@ -17,13 +18,16 @@ public interface PatientService {
     Patient getPatientById(int id, String tableName);
 
     Patient setPatient(int reportNumber, String name, String surname, String fathersName,
-            String sex, String birthDate, String deathDate, String expert, String tableName);
+            String sex, String yearOfBirth, LocalDate examDate, String expert, String tableName);
 
     int updatePatient(int reportNumber, String name, String surname, String fathersName,
-            String sex, String birthDate, String deathDate, String expert, int id, String tableName);
+            String sex, String yearOfBirth, String examDate, String expert, int id, String tableName);
 
     int deletePatient(int patientId, String tableName);
 
     void resetPK(String tableName);
+    
+    List<Patient> getPatientByNameSurnameYear(String name,String surname,
+            String yearFrom,String yearTo,String tableName);
 
 }

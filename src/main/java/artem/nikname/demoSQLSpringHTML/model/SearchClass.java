@@ -6,8 +6,8 @@ public class SearchClass {
     
     private String searchName;
     private String searchSurname;
-    private int yearFrom;
-    private int yearTo;
+    private String yearFrom;
+    private String yearTo;
 
     public String getSearchName() {
         return searchName;
@@ -25,21 +25,31 @@ public class SearchClass {
         this.searchSurname = searchSurname;
     }
 
-    public int getYearFrom() {
-        return yearFrom;
+    public String getYearFrom() {
+        return yearFrom + ",01,01";
     }
 
-    public void setYearFrom(int yearFrom) {
+    public void setYearFrom(String yearFrom) {
         this.yearFrom = yearFrom;
     }
 
-    public int getYearTo() {
-        return yearTo;
+    public String getYearTo() {
+        return yearTo + ",12,31";
     }
 
-    public void setYearTo(int yearTo) {
+    public void setYearTo(String yearTo) {
         this.yearTo = yearTo;
     }
+
+    @Override
+    public String toString() {
+        return "SearchClass{" + "searchName=" + searchName + 
+                ", searchSurname=" + searchSurname + ", yearFrom=" + 
+                yearFrom + ", yearTo=" + yearTo + '}';
+    }
+    
+    
+    
     
     
 }

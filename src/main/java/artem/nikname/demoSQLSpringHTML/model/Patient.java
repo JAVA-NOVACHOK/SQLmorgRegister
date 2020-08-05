@@ -6,18 +6,13 @@
 package artem.nikname.demoSQLSpringHTML.model;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Table;
 
 /**
  *
@@ -35,24 +30,25 @@ public class Patient implements Serializable {
     private String fathersName;
     private String sex;
     private String yearOfBirth;
-    private String examDate;
+    private LocalDate examDate;
     private String expert;
 
     public Patient() {
     }
 
-    public Patient(int reprtNumber, String surname, String name, String fathersName, String sex, String yearOfBirth, String examDate, String expert) {
+    public Patient(int reprtNumber, String surname, String name, String fathersName, String sex, String yearOfBirth, LocalDate examDate, String expert) {
         this.surname = surname;
         this.reportNumber = reprtNumber;
         this.name = name;
         this.fathersName = fathersName;
         this.sex = sex;
         this.yearOfBirth = yearOfBirth;
-        this.examDate = dateToViewMode(examDate);
+        this.examDate = examDate;
         this.expert = expert;
     }
 
     public static String dateToViewMode(String inputDate) {
+       
         LocalDate date = LocalDate.parse(inputDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         return date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     }
@@ -74,11 +70,11 @@ public class Patient implements Serializable {
         this.yearOfBirth = yearOfBirth;
     }
 
-    public String getExamDate() {
+    public LocalDate getExamDate() {
         return examDate;
     }
 
-    public void setExamDate(String examDate) {
+    public void setExamDate(LocalDate examDate) {
         this.examDate = examDate;
     }
 

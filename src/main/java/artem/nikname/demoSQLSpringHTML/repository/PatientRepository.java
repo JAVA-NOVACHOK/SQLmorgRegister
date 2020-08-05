@@ -6,6 +6,7 @@
 package artem.nikname.demoSQLSpringHTML.repository;
 
 import artem.nikname.demoSQLSpringHTML.model.Patient;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.jar.Attributes;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,5 +35,7 @@ public interface PatientRepository {
     int deletePatient(int patientId);
 
     void resetPK();
+    
+    List<Patient> getPatientByNameSurnameYear(String name,String surname,String yearFrom,String yearTo);
 
 }

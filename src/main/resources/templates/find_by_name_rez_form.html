@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html id="page" lang="en" xmlns:th="http://www.thymeleaf.org">
     <head id="head" >
-        <link rel="stylesheet" type="text/css" href="style.css">
         <link rel="stylesheet" type="text/css" href="wide-search.css">
+        <link rel="stylesheet" type="text/css" href="style.css">
         <link rel="stylesheet" type="text/css" href="edit-remove.css">
-
+        <script type="text/javascript" src="myJavascript.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <meta charset="UTF-8">
@@ -82,25 +82,8 @@
         </style>
         <script>
 
-            function myFunction() {
-                var x = document.getElementById("myDIV");
-                if (x.hidden === true) {
-                    x.hidden = false;
-                } else {
-                    x.hidden = true;
-                }
-            }
 
-            function confirmDelete() {
-                var conf = confirm("Ви впернені, що хочете видалити запис?");
-                if (conf) {
-                    document.getElementById("yesAnswer").checked = true;
-                    document.getElementById("deleteForm").action = "/patient/delete";
-                } else {
-                    document.getElementById("yesAnswer").checked = false;
-                    document.getElementById("deleteForm").action = "/patient/delete";
-                }
-            }
+
             function refresh() {
                 window.location.reload();
             }
@@ -108,7 +91,7 @@
 
     <h2>Пошук за ім'ям або прізвищем</h2>
 
-    <p>Введіть ім'я або прізвище:</p>
+    <!--<p>Введіть ім'я або прізвище:</p>
     <form class="example" id="find_by_name" method="post" action="/patient/searchReasult">
         <input type="number" hidden="true" th:value="${id}" name="id">
         <input type="text" id="name" placeholder="Пошук..." name="name" required 
@@ -120,34 +103,30 @@
         <button id="wideSearchBtn" onclick="myFunction()"><i class="fa fa-fw fa-plus-circle"></i></button>
         <label for="wideSearchBtn"> - Розширений пошук</label>
     </div>
+    <div id="myDIV" >
+    -->
+    <p>Розширений пошук</p>
 
-
-    <div id="myDIV" hidden="true">
-        <p>Розширений пошук</p>
-
-        <form class="form-inline" action="/find_by_name_rez" >
-            <label for="name">Прізвище</label>
-            <input type="text" id="surname" name="surname" placeholder="прізвище">
-            <label for="name">Ім'я</label>
-            <input type="text" id="name" name="name" placeholder="ім'я">
-            <label for="yearFrom">Рік:&nbspвід</label>
-            <select id="yearFrom" name="yearFrom">
-                <option th:each="i : ${#numbers.sequence(2010, __${currentYear}__)}" th:value="${i}" th:text="${i}">
-                </option>
-                <option selected="selected"></option>
-            </select>
-            <label for="yearTo">до</label>
-            <select id="yearTo" name="yearTo">
-                <option th:each="i : ${#numbers.sequence(2010, __${currentYear}__)}" th:value="${i}" th:text="${i}">
-                </option>
-                <option selected="selected"></option>
-            </select>
-            <button type="submit"><i class="fa fa-search"></i></button>
-        </form>
-    </div>
-
-
-
+    <form class="form-inline" method="post" action="/patient/searchReasult" >
+        <input type="number" hidden="true" th:value="${id}" name="id">
+        <label for="name">Прізвище</label>
+        <input type="text" id="searchSurname" name="searchSurname" placeholder="прізвище">
+        <label for="name">Ім'я</label>
+        <input type="text" id="searchName" name="searchName" placeholder="ім'я">
+        <label for="yearFrom">Рік:&nbspвід</label>
+        <select id="yearFrom" name="yearFrom">
+            <option th:each="i : ${#numbers.sequence(1920, __${currentYear}__)}" th:value="${i}" th:text="${i}"
+                    th:selected="${i==__${currentYear}__}">
+            </option>
+        </select>
+        <label for="yearTo">до</label>
+        <select id="yearTo" name="yearTo">
+            <option th:each="i : ${#numbers.sequence(1920, __${currentYear}__)}" th:value="${i}" th:text="${i}"
+                    th:selected="${i==__${currentYear}__}">
+            </option>
+        </select>
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
 </head>
 
 
@@ -197,15 +176,16 @@
                         </form>
                     </td>
                     <td>
-                        <form id="deleteForm" method="get" >
-
+                        <form id="deleteForm" method="get" action="/patient/delete">
                             <input type="checkbox" hidden="true" id="yesAnswer" name="yesAnswer">
                             <input type="number" hidden="true" style="max-width: 0px;" th:value="${id}" name="id">                        
-                            <input type="text" hidden="true" style="max-width: 0px;" th:value="${searchName}" name="searchName">                        
+                            <input type="text" hidden="true" style="max-width: 0px;" th:value="${searchClass.searchName}" name="searchName">                        
+                            <input type="text" hidden="true" style="max-width: 0px;" th:value="${searchClass.searchSurname}" name="searchSurname">                        
+                            <input type="text" hidden="true" style="max-width: 0px;" th:value="${searchClass.yearFrom}" name="yearFrom">                        
+                            <input type="text" hidden="true" style="max-width: 0px;" th:value="${searchClass.yearTo}" name="yearTo">                        
                             <input type="number" hidden="true" style="max-width: 0px;"th:value="${patient.patientId}" name="patientId">
-                            <button type="submit" id="remove" onclick='confirmDelete()'><i class="fa fa-remove"></i>
+                            <button type="submit" id="remove" onclick='confirmDeleteInSearch()'><i class="fa fa-remove"></i>
                             </button>
-
                         </form>
                     </td>
 

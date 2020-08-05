@@ -71,21 +71,18 @@ public class PatientController {
         this.patientService = patientService;
         this.securityCheck = securityCheck;
     }
-    
-    
-     public static String getCurrentDate() {
+
+    public static String getCurrentDate() {
         Date currentDate = Calendar.getInstance().getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(currentDate);
     }
-     
-     public static int getCurrentYear(){
-         Date currentDate = Calendar.getInstance().getTime();
-         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-         return Integer.parseInt(sdf.format(currentDate));
-     }
-     
-     
+
+    public static int getCurrentYear() {
+        Date currentDate = Calendar.getInstance().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+        return Integer.parseInt(sdf.format(currentDate));
+    }
 
     @ModelAttribute("user")
     public User getUser() {
@@ -101,26 +98,31 @@ public class PatientController {
     public IdClass getIdClass() {
         return new IdClass();
     }
-    
+
     @ModelAttribute("searchClass")
-    public SearchClass getSearchClass(){
+    public SearchClass getSearchClass() {
         return new SearchClass();
     }
-    
-    
 
     @PostMapping("add")
-    public String processAdd(@ModelAttribute("idClass") IdClass idClass, @RequestParam int reportNumber, String surname, String name, String fathersName,
+    public String processAdd(@ModelAttribute("idClass") IdClass idClass,
+            @RequestParam int reportNumber, String surname, String name, String fathersName,
             String sex, String yearOfBirth, String examDate, String expert, Model model) {
         User user = usersRepository.getUserById(idClass.getId());
         if (user == null) {
             return "redirect:/login";
         } else {
+
+            LocalDate date = LocalDate.parse(examDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             logger.info("add post method mapping");
             model.addAttribute("massege", "Додавання в базу");
             model.addAttribute("id", idClass.getId());
             synchronized (patientService) {
-                if (patientService.save(reportNumber, surname, name, fathersName, sex, yearOfBirth, examDate, expert, user.getTableName()) != null) {
+                Patient patient = null;
+                if ((patient = patientService.save(reportNumber, surname, name,
+                        fathersName, sex, yearOfBirth, date, expert,
+                        user.getTableName())) != null) {
+                    model.addAttribute("patient", patient);
                     return "success-form";
                 }
             }
@@ -143,10 +145,19 @@ public class PatientController {
     }
 
     @GetMapping("success")
-    public String success(Model model, @RequestParam int id) {
-        model.addAttribute("massege", "ededed id = " + id);
-        logger.info("success method mapping");
-        return "success";
+    public String success(@ModelAttribute("IdClass") IdClass idClass,
+            @RequestParam int patientId, Model model) {
+        User user = usersRepository.getUserById(idClass.getId());
+        if (user == null || !users.contains(user)) {
+            return "redirect:/showLoginForm";
+        } else {
+            Patient patient = patientService.getPatientById(patientId, user.getTableName());
+            model.addAttribute("user", user);
+            model.addAttribute("massege", "Додавання в базу");
+            model.addAttribute("id", user.getId());
+            model.addAttribute("patient", patient);
+            return "success-form";
+        }
     }
 
     @GetMapping("home")
@@ -156,16 +167,19 @@ public class PatientController {
     }
 
     @GetMapping("find_by_name_rez")
-    public String find(@ModelAttribute("idClass") IdClass idClass, Model model, @RequestParam String searchName) {
+    public String find(@ModelAttribute("idClass") IdClass idClass,
+            @RequestParam(required = false) @ModelAttribute("searchClass") SearchClass searchClass,
+            Model model) {
         User user = usersRepository.getUserById(idClass.getId());
         if (user == null || !users.contains(user)) {
             return "redirect:/showLoginForm";
         } else {
-            String name = searchName;
-            if (name != null) {
-                model.addAttribute("searchName", name);
-            }
+//            String name = searchName;
+//            if (name != null) {
+//                model.addAttribute("searchName", name);
+//            }
             List<Patient> patients = new ArrayList<>();
+            model.addAttribute("searchClass", searchClass);
             model.addAttribute("messageNum", 0);
             model.addAttribute("patients", patients);
             model.addAttribute("currentYear", getCurrentYear());
@@ -175,20 +189,24 @@ public class PatientController {
         }
     }
 
-    
     @PostMapping("searchReasult")
-    public String findProcess(@ModelAttribute("idClass") IdClass idClass, @RequestParam String name, Model model) {
+    public String findProcess(@ModelAttribute("idClass") IdClass idClass,
+            @ModelAttribute("searchClass") SearchClass searchClass,
+            Model model) {
         User user = usersRepository.getUserById(idClass.getId());
         if (user == null || !users.contains(user)) {
             return "redirect:/showLoginForm";
         } else {
             List<Patient> list = new ArrayList<>();
-            List<Patient> patients = patientService.getPatientByName(name, user.getTableName());
-            
-                model.addAttribute("id", user.getId());
-                model.addAttribute("searchName", name);
-                model.addAttribute("messageNum", 1);
-                model.addAttribute("patients", patients);
+            List<Patient> patients = patientService.getPatientByNameSurnameYear(searchClass.getSearchName(),
+                    searchClass.getSearchSurname(), searchClass.getYearFrom(),
+                    searchClass.getYearTo(), user.getTableName());
+
+            model.addAttribute("id", user.getId());
+            model.addAttribute("searchClass", searchClass);
+            model.addAttribute("currentYear", getCurrentYear());
+            model.addAttribute("messageNum", 1);
+            model.addAttribute("patients", patients);
             return "find_by_name_rez_form";
         }
     }
@@ -208,8 +226,8 @@ public class PatientController {
                 arr.set(size - 2, res);
                 arr.remove(size - 1);
                 synchronized (patientService) {
-                    patientService.save(Integer.parseInt(arr.get(0)), arr.get(1), arr.get(2), arr.get(3), arr.get(4),
-                            Patient.dateForInputDate(replaceDots(arr.get(5))), Patient.dateForInputDate(replaceDots(arr.get(6))), arr.get(7), tableName);
+//                    patientService.save(Integer.parseInt(arr.get(0)), arr.get(1), arr.get(2), arr.get(3), arr.get(4),
+//                            Patient.dateForInputDate(replaceDots(arr.get(5))), Patient.dateForInputDate(replaceDots(arr.get(6))), arr.get(7), tableName);
                 }
                 records++;
             }
@@ -250,10 +268,13 @@ public class PatientController {
         if (user == null || !users.contains(user)) {
             return "redirect:/showLoginForm";
         } else {
+            
+            Patient patient = patientService.getPatientById(patientId, user.getTableName());
+            System.out.println(" \u001b31m EDIT patient = " + patient);
             model.addAttribute("id", id);
             model.addAttribute("massege", "Редагування");
+            model.addAttribute("patient",patient);
             String tableName = user.getTableName();
-            examDate = Patient.dateToViewMode(examDate);
             int rez = patientService.updatePatient(reportNumber, name, surname,
                     fathersName, sex, yearOfBirth, examDate, expert, patientId, tableName);
             if (rez < 1) {
@@ -283,18 +304,22 @@ public class PatientController {
         return "redirect:/showLoginForm";
     }
 
-   
-
     @GetMapping("delete")
-    public String delete(@RequestParam int id, String searchName, int patientId, boolean yesAnswer, Model model) {
+    public String delete(@ModelAttribute("searchClass") SearchClass searchClass,
+            @RequestParam int id, String searchName, int patientId,
+            boolean yesAnswer, Model model) {
         User user = usersRepository.getUserById(id);
         String tableName = user.getTableName();
         if (yesAnswer) {
             patientService.deletePatient(patientId, tableName);
         }
+        System.out.println(searchClass);
         model.addAttribute("messageNum", 1);
-        model.addAttribute("patients", patientService.getPatientByName(searchName, tableName));
-        model.addAttribute("searchName", searchName);
+        model.addAttribute("currentYear", getCurrentYear());
+        model.addAttribute("patients", patientService.getPatientByNameSurnameYear(
+                searchClass.getSearchName(), searchClass.getSearchSurname(),
+                searchClass.getYearFrom(), searchClass.getYearTo(),
+                user.getTableName()));
         model.addAttribute("patientId", patientId);
         model.addAttribute("id", id);
 

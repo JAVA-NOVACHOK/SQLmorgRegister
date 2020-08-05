@@ -1,5 +1,6 @@
 package artem.nikname.demoSQLSpringHTML.model;
 
+import java.time.LocalDate;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -12,7 +13,7 @@ public class Poltava extends Patient {
 
     public Poltava(int reprtNumber, String surname, String name,
             String fathersName, String sex, String yearOfBirth,
-            String examDate, String expert) {
+            LocalDate examDate, String expert) {
         super(reprtNumber, surname, name, fathersName, sex, yearOfBirth,
                 examDate, expert);
     }

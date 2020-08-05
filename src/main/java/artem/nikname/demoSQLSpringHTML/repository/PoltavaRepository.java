@@ -7,6 +7,7 @@ package artem.nikname.demoSQLSpringHTML.repository;
 
 import artem.nikname.demoSQLSpringHTML.model.Patient;
 import artem.nikname.demoSQLSpringHTML.model.Poltava;
+import artem.nikname.demoSQLSpringHTML.model.SearchClass;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -27,6 +28,11 @@ public interface PoltavaRepository extends PatientRepository,JpaRepository<Patie
     @Query(value = "SELECT p FROM " + TABLE + " p WHERE p.name LIKE ?1% "
                 + "OR p.surname LIKE ?1% ORDER BY p.surname")
     List<Patient> getPatientByName(String name);
+    
+    @Override
+    @Query(value = "SELECT p FROM " + TABLE + " p WHERE p.name LIKE ?1% AND p.surname LIKE ?2% "
+            + "AND p.examDate BETWEEN STR_TO_DATE(?3,'%Y,%m,%d') AND STR_TO_DATE(?4,'%Y,%m,%d')")
+    List<Patient> getPatientByNameSurnameYear(String name,String surname,String yearFrom,String yearTo);
 
     @Override
     @Query(value = "SELECT p FROM " + TABLE + " p WHERE p.id = ?1")

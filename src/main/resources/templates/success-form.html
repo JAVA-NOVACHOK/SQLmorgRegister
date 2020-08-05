@@ -1,28 +1,86 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head id="head">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <meta  charset="UTF-8">
-    <title>Success</title>
+    <head id="head">
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" type="text/css" href="edit-remove.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script type="text/javascript" src="myJavascript.js"></script>
+        <meta  charset="UTF-8">
+        <title>Success</title>
 
-</head>
-<body>
-<div align="center">
-   
+    </head>
+    <body class="main">
+        <div align="center">
+            <h3 th:text="|${massege} пройшло успішно!|">Пройшло успішно!</h3>
+            <h2> Ви внесли наступні дані, які ви можете редагувати або видалити:</h2>
+        </div>
 
-    <h3 th:text="|${massege} пройшло успішно!|">Пройшло успішно!</h3>
-   
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="max-width: 50px; text-align: center;">№</th>
+                        <th>Прізвище</th>
+                        <th>Ім'я</th>
+                        <th>По-батькові</th>
+                        <th>стать</th>
+                        <th>рік народження</th>
+                        <th>дата розтину</th>
+                        <th>експерт</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
 
-    
-</div>
-</body>
-<div  class="sidebar"  >
+                </thead>
+                <tbody >
+
+                    <tr >
+                        <td th:text="${patient.reportNumber}" style="min-width: 15px; text-align:  center">№</td>
+                        <td th:text="${patient.surname}">Прізвище</td>
+                        <td th:text="${patient.name}">Ім'я</td>
+                        <td th:text="${patient.fathersName}">По-батькові</td>
+                        <td th:text="${patient.sex}">стать</td>
+                        <td th:text="${patient.yearOfBirth == '0' ? '' : __${patient.yearOfBirth}__}">рік народження</td>
+                        <td th:text="${patient.examDate}">дата смерті</td>
+                        <td th:text="${patient.expert}">експерт</td>
+                        <td ><form action="/patient/edit" method="get">
+                                <input type="number" hidden="true" th:value="${id}" name="id">
+                                <input type="number" hidden="true" style="max-width: 0px;"th:value="${patient.patientId}" name="patientId">
+                                <button  type="submit" id="edit" ><i class="fa fa-edit"></i></button>
+                            </form>
+                        </td>
+                        <td>
+                            <form id="deleteForm" method="get">
+                                <input type="checkbox" hidden="true" id="yesAnswer" name="yesAnswer">
+                                <input type="number" hidden="true" style="max-width: 0px;" th:value="${id}" name="id">                        
+                                <input type="text" hidden="true" style="max-width: 0px;" th:value="${searchClass.searchName}" name="searchName">                        
+                                <input type="text" hidden="true" style="max-width: 0px;" th:value="${searchClass.searchSurname}" name="searchSurname">                        
+                                <input type="text" hidden="true" style="max-width: 0px;" th:value="${searchClass.yearFrom}" name="yearFrom">                        
+                                <input type="text" hidden="true" style="max-width: 0px;" th:value="${searchClass.yearTo}" name="yearTo">                        
+                                <input type="number" hidden="true" style="max-width: 0px;"th:value="${patient.patientId}" name="patientId">
+                                <button type="submit" id="remove" onclick='confirmDeleteInSuccess()'><i class="fa fa-remove"></i>
+                                </button>
+                            </form>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+            </table>  
+        </div>
+
+        <div class="addMore">
+            <form id="addFromSuccess" method="get" action="/patient/addNew">
+                <input type="number" hidden="true" style="max-width: 0px;" th:value="${id}" name="id">  
+                <button type="submit" id="addMoreBtn" name="addMoreBtn" >
+                    <i class="fa fa-fw fa-plus-circle"></i>
+                </button>
+                <label id="labelAddMoreBtn" for="addMoreBtn">Додати </label>
+            </form>
+        </div>
+    </body>
+    <div  class="sidebar"  >
         <div th:replace="fragments/sideB :: sideBId(id=${id})"></div>
     </div>
-<div>
-<footer id="footer">
-        <h2>Footer</h2>
-    </footer>
-</div>
+
 </html>

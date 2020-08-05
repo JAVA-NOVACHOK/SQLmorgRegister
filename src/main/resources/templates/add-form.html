@@ -48,7 +48,7 @@
                     </div>
                     <div class="block">
                         <label for="yearOfBirth" >Введіть рік народження</label>
-                        <select id="yearOfBirth" name="yearOfBirth" placeholder="рік">
+                        <select id="yearOfBirth" name="yearOfBirth" placeholder="рік" style="width: 100%;">
                             <option th:each="i : ${#numbers.sequence(1920, __${currentYear}__)}" th:value="${i}" th:text="${i}">
                             </option>
                             <option selected="selected" ></option>
